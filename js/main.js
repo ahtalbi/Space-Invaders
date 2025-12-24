@@ -1,3 +1,5 @@
-import { createContainer } from './map.js'
+import { createContainer } from "./map.js";
+import { moveRocket } from "./fusée.js";
 
-createContainer()
+createContainer();
+requestAnimationFrame(moveRocket);

@@ -1,7 +1,10 @@
-export const createContainer = () => {
-    const container = document.createElement("div")
-    container.className = "container"
+import { vars, Rocket } from "./fusée.js";
 
-    document.body.append(container)
+export const createContainer = async () => {
+  const container = document.createElement("div");
+  container.className = "container";
 
+  document.body.append(container);
+  vars.rocket = new Rocket();
+  vars.rocket.create(container);
 }
