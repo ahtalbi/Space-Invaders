@@ -28,7 +28,7 @@ class enemy {
     create(container, num) {
         if (num !== 0) {
             if (num % configEnemies.numberOfEnemiesInLine === 0) {
-                this.enemyElement.style.top = `${parseInt(configEnemies.arrOfEnemies[num - 1].enemyElement.style.top, 10) + configEnemies.width / 4 * 2}px`;
+                this.enemyElement.style.top = `${parseInt(configEnemies.arrOfEnemies[num - 1].enemyElement.style.top, 10) + configEnemies.width / 2}px`;
                 this.enemyElement.style.left = `0px`;
             } else {
                 this.enemyElement.style.top = `${parseInt(configEnemies.arrOfEnemies[num - 1].enemyElement.style.top, 10)}px`;
@@ -39,8 +39,10 @@ class enemy {
     }
 }
 
+// this function for the movment of the enemies 
 function moveTheEnemies() {
     let detEnemies = configEnemies.containerEnemies.getBoundingClientRect();
+    if (detEnemies.bottom >= document.getElementById("rocket").getBoundingClientRect().top) return;
     if (configEnemies.goingRight) {
         if (detEnemies.right >= configEnemies.rightWall) {
             configEnemies.containerEnemies.style.top = parseInt(configEnemies.containerEnemies.style.top, 10) + configEnemies.speed * 3 + `px`;
@@ -67,6 +69,7 @@ export function InitlizeTheEnemies(container) {
     configEnemies.containerEnemies.style.top = "0px";
     configEnemies.containerEnemies.style.left = "0px";
     configEnemies.containerEnemies.style.width = (configEnemies.width / 4 * 3 * (configEnemies.numberOfEnemiesInLine - 1) + configEnemies.width) + "px";
+    configEnemies.containerEnemies.style.height = (Math.ceil(configEnemies.numberEnemies / configEnemies.numberOfEnemiesInLine) - 1) * (configEnemies.width / 2) + configEnemies.width + "px";
     configEnemies.containerEnemies.style.position = "absolute";
     configEnemies.containerEnemies.classList.add("containerEnemies");
     for (let i = 0; i < configEnemies.numberEnemies; i++) {
