@@ -49,7 +49,12 @@ function moveTheEnemies() {
             configEnemies.containerEnemies.style.left = parseInt(configEnemies.containerEnemies.style.left, 10) + configEnemies.speed + `px`;
         }
     } else {
-        
+        if (detEnemies.left <= configEnemies.leftWall) {
+            configEnemies.containerEnemies.style.top = parseInt(configEnemies.containerEnemies.style.top, 10) + configEnemies.speed * 3 + `px`;
+            configEnemies.goingRight = true;
+        } else {
+            configEnemies.containerEnemies.style.left = parseInt(configEnemies.containerEnemies.style.left, 10) - configEnemies.speed + `px`;
+        }
     }
     requestAnimationFrame(() => moveTheEnemies());
 }
