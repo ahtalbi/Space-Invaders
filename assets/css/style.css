@@ -29,11 +29,21 @@ body {
 }
 
 /* fusée */
-.rocket {
+#rocket {
   width: 40px;
   height: 70px;
   margin-top: 470px;
   margin-left: 350px;
   background-image: url("../pictures/fusée.png");
   background-size: contain;
+  will-change: transform;
+}
+
+
+.projectile{
+  height: 10px;
+  width: 10px;
+  background: red;
+  position: fixed;
+  will-change: transform;
 }

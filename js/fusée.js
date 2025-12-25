@@ -1,33 +1,66 @@
-// initialize vars for the rocket move
-export let vars = {
-  rocket: null,
+import { rocket } from "./map.js";
+
+let vars = {
   pressleft: false,
   pressrigth: false,
-};
+  timerMove: Date.now()
+}
 
-// this represent the rocket object, it can create and update the rocket position
+// this represent the rocket object, it can create and update the rocket position, also includes the shoots methods
 export class Rocket {
   constructor() {
-    this.rocket = null;
-    this.xpos = 0;
+    this.container = null
+    this.maxleft = -340
+    this.maxrigth = 365
+    this.rocket = null
+    this.xpos = 0
+    this.tireNow = Date.now()
   }
 
+  // create the rocket container
   create(container) {
     this.rocket = document.createElement("div");
-    this.rocket.className = "rocket";
+    this.rocket.id = "rocket";
     container.append(this.rocket);
+    this.container = container
   }
-
+  // move left
   moveLeft(speed) {
-    if (this.xpos < -340) return;
-    this.xpos -= speed;
-    this.rocket.style.transform = `translateX(${this.xpos}px)`;
+    if (this.xpos > this.maxleft) {
+      this.xpos -= speed;
+      this.rocket.style.transform = `translate3d(${this.xpos}px,0,0)`;
+    }
   }
-
+  // move rigth
   moveRight(speed) {
-    if (this.xpos > 365) return;
-    this.xpos += speed;
-    this.rocket.style.transform = `translateX(${this.xpos}px)`;
+    if (this.xpos < this.maxrigth) {
+      this.xpos += speed;
+      this.rocket.style.transform = `translate3d(${this.xpos}px,0,0)`;
+    }
+  }
+  // start shooting
+  startTireProjectile() {
+    if (this.tireNow && Date.now() - this.tireNow < 150) return
+    this.tireNow = Date.now()
+    let projectile = document.createElement('div')
+    projectile.className = 'projectile'
+    this.container.append(projectile)
+
+    let r = this.rocket.getBoundingClientRect();
+    projectile.style.left = `${r.left + 15}px`;
+    projectile.style.top = `${r.top}px`;
+    let m = r.top
+
+    let shoot = () => {
+      projectile.style.top = `${m}px`
+      m -= 5
+      if (m > 160) {
+        requestAnimationFrame(shoot)
+      } else {
+        projectile.remove()
+      }
+    }
+    requestAnimationFrame(shoot)
   }
 }
 
@@ -39,6 +72,8 @@ window.addEventListener("keydown", (e) => {
     case "ArrowRight":
       vars.pressrigth = true;
       break;
+    case " ":
+      rocket.startTireProjectile()
   }
 });
 
@@ -55,7 +90,11 @@ window.addEventListener("keyup", (e) => {
 
 // try to move the rocket based on the input then schedule next update for smooth animation
 export function moveRocket() {
-  if (vars.pressleft) vars.rocket.moveLeft(5);
-  if (vars.pressrigth) vars.rocket.moveRight(5);
+  let now = Date.now();
+  if (now - vars.timerMove >= 16) {
+    if (vars.pressleft) rocket.moveLeft(10);
+    if (vars.pressrigth) rocket.moveRight(10);
+    vars.timerMove = now;
+  }
   requestAnimationFrame(moveRocket);
 }
