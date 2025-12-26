@@ -1,5 +1,5 @@
 let configEnemies = {
-    speed: 4,
+    speed: 3,
     numberEnemies: 15,
     numberOfEnemiesInLine: 5,
     width: 130,
@@ -8,6 +8,7 @@ let configEnemies = {
     arrOfEnemies: [],
     containerEnemies: document.createElement("div"),
     goingRight: true,
+    animationEnemies: null,
 }
 
 // this represent the enemy object, it can create and update the enemy position, also includes live or dead
@@ -42,6 +43,7 @@ class enemy {
 // this function for the movment of the enemies 
 function moveTheEnemies() {
     let detEnemies = configEnemies.containerEnemies.getBoundingClientRect();
+    // ici déclencher le end game.
     if (detEnemies.bottom >= document.getElementById("rocket").getBoundingClientRect().top) return;
     if (configEnemies.goingRight) {
         if (detEnemies.right >= configEnemies.rightWall) {
@@ -61,6 +63,60 @@ function moveTheEnemies() {
     requestAnimationFrame(() => moveTheEnemies());
 }
 
+function isTheBulletInside(a, b) {
+    const ra = a.getBoundingClientRect();
+    const rb = b.getBoundingClientRect();
+
+    return (
+        ra.left < rb.right &&
+        ra.right > rb.left &&
+        ra.top < rb.bottom &&
+        ra.bottom > rb.top
+    );
+}
+
+function updateEnemiesContainerSize() {
+    const enemies = configEnemies.arrOfEnemies;
+    if (enemies.length === 0) return;
+
+    let minLeft = Infinity;
+    let maxRight = -Infinity;
+    let maxBottom = -Infinity;
+
+    for (let i = 0; i < enemies.length; i++) {
+        const rect = enemies[i].enemyElement.getBoundingClientRect();
+        const parentRect = configEnemies.containerEnemies.getBoundingClientRect();
+
+        const left = rect.left - parentRect.left;
+        const right = rect.right - parentRect.left;
+        const bottom = rect.bottom - parentRect.top;
+
+        if (left < minLeft) minLeft = left;
+        if (right > maxRight) maxRight = right;
+        if (bottom > maxBottom) maxBottom = bottom;
+    }
+
+    configEnemies.containerEnemies.style.width = (maxRight - minLeft) + "px";
+    configEnemies.containerEnemies.style.height = maxBottom + "px";
+}
+
+function enemyDie() {
+    const bullets = document.querySelectorAll(".projectile");
+    for (let i = 0; i < bullets.length; i++) {
+        for (let j = 0; j < configEnemies.arrOfEnemies.length; j++) {
+            if (isTheBulletInside(bullets[i], configEnemies.arrOfEnemies[j].enemyElement)) {
+                configEnemies.arrOfEnemies[j].enemyElement.remove();
+                configEnemies.arrOfEnemies.splice(j, 1);
+                bullets[i].remove();
+                updateEnemiesContainerSize();
+                cancelAnimationFrame(configEnemies.animationEnemies);
+                configEnemies.animationEnemies = requestAnimationFrame(() => moveTheEnemies());
+            }
+        }
+    }
+    requestAnimationFrame(() => enemyDie());
+}
+
 // this function is for initialize and create all enemies
 export function InitlizeTheEnemies(container) {
     let detContainer = container.getBoundingClientRect();
@@ -68,6 +124,7 @@ export function InitlizeTheEnemies(container) {
     configEnemies.rightWall = detContainer.right;
     configEnemies.containerEnemies.style.top = "0px";
     configEnemies.containerEnemies.style.left = "0px";
+    configEnemies.containerEnemies.style.zIndex = "99999999";
     configEnemies.containerEnemies.style.width = (configEnemies.width / 4 * 3 * (configEnemies.numberOfEnemiesInLine - 1) + configEnemies.width) + "px";
     configEnemies.containerEnemies.style.height = (Math.ceil(configEnemies.numberEnemies / configEnemies.numberOfEnemiesInLine) - 1) * (configEnemies.width / 2) + configEnemies.width + "px";
     configEnemies.containerEnemies.style.position = "absolute";
@@ -78,5 +135,6 @@ export function InitlizeTheEnemies(container) {
         configEnemies.arrOfEnemies.push(en);
     }
     container.append(configEnemies.containerEnemies);
-    requestAnimationFrame(() => moveTheEnemies());
+    configEnemies.animationEnemies = requestAnimationFrame(() => moveTheEnemies());
+    requestAnimationFrame(() => enemyDie());
 }
