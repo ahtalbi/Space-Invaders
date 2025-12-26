@@ -97,3 +97,29 @@ export const renderStart = () => {
   startBtn.addEventListener("click", handleStart, { once: true })
   document.addEventListener("keydown", handleStart, { once: true })
 }
+
+const triggerGameOver = () => {
+}
+
+const updateScore = (point) => {
+  gameData.score += point
+  const scoreEl = document.querySelector(".score")
+  scoreEl.textContent = "Score: " + gameData.score
+}
+
+
+const updateLevel = (newLevel) => {
+  console.log(gameData.level)
+  gameData.level = newLevel
+  const levelEl = document.querySelector(".level")
+  levelEl.textContent = "Level: " + gameData.level
+}
+
+
+const removeOneLife = () => {
+  const lastHeart = document.querySelector(".heart:last-of-type")
+  gameData.lives --
+  lastHeart.remove()
+
+  if (gameData.lives === 0) triggerGameOver()
+}
