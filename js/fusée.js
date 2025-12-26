@@ -3,18 +3,18 @@ import { rocket } from "./map.js";
 let vars = {
   pressleft: false,
   pressrigth: false,
-  timerMove: Date.now()
-}
+  timerMove: Date.now(),
+};
 
 // this represent the rocket object, it can create and update the rocket position, also includes the shoots methods
 export class Rocket {
   constructor() {
-    this.container = null
-    this.maxleft = -340
-    this.maxrigth = 365
-    this.rocket = null
-    this.xpos = 0
-    this.tireNow = Date.now()
+    this.container = null;
+    this.maxleft = -225;
+    this.maxrigth = 215;
+    this.rocket = null;
+    this.xpos = 0;
+    this.tireNow = Date.now();
   }
 
   // create the rocket container
@@ -22,7 +22,7 @@ export class Rocket {
     this.rocket = document.createElement("div");
     this.rocket.id = "rocket";
     container.append(this.rocket);
-    this.container = container
+    this.container = container;
   }
   // move left
   moveLeft(speed) {
@@ -40,27 +40,28 @@ export class Rocket {
   }
   // start shooting
   startTireProjectile() {
-    if (this.tireNow && Date.now() - this.tireNow < 150) return
-    this.tireNow = Date.now()
-    let projectile = document.createElement('div')
-    projectile.className = 'projectile'
-    this.container.append(projectile)
+    if (this.tireNow && Date.now() - this.tireNow < 150) return;
+    this.tireNow = Date.now();
+    let projectile = document.createElement("img");
+    projectile.className = "projectile";
+    projectile.src = "./assets/pictures/projectile.gif";
+    this.container.append(projectile);
 
     let r = this.rocket.getBoundingClientRect();
-    projectile.style.left = `${r.left + 15}px`;
-    projectile.style.top = `${r.top}px`;
-    let m = r.top
+    projectile.style.left = `${r.left + 22}px`;
+    projectile.style.top = `${r.top - 50}px`;
+    let m = r.top - 50;
 
     let shoot = () => {
-      projectile.style.top = `${m}px`
-      m -= 5
+      projectile.style.top = `${m}px`;
+      m -= 5;
       if (m > 160) {
-        requestAnimationFrame(shoot)
+        requestAnimationFrame(shoot);
       } else {
-        projectile.remove()
+        projectile.remove();
       }
-    }
-    requestAnimationFrame(shoot)
+    };
+    requestAnimationFrame(shoot);
   }
 }
 
@@ -73,7 +74,7 @@ window.addEventListener("keydown", (e) => {
       vars.pressrigth = true;
       break;
     case " ":
-      rocket.startTireProjectile()
+      rocket.startTireProjectile();
   }
 });
 
