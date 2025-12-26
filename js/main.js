@@ -1,5 +1,5 @@
-import { createContainer } from "./map.js";
+import { createGameBoard } from "./map.js";
 import { moveRocket } from "./fusée.js";
 
-createContainer();
+createGameBoard();
 requestAnimationFrame(moveRocket);

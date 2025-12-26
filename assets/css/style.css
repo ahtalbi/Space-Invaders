@@ -1,49 +1,92 @@
 body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url("../pictures/map.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+    margin: 20px;
+    background-image: url("../pictures/starfield_alpha.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    font-size: large;
+    font-family: "Orbitron", sans-serif;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .container {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  width: clamp(320px, 85vmin, 1120px);
-  max-width: 95vw;
-  max-height: 95vh;
-  background-image: url("../pictures/map.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: #000814;
-  border: 2px solid beige;
-  border-radius: 15px;
+    position: fixed;
+    margin-top: auto;
+    position: fixed;
+    width: 500px;
+    aspect-ratio: 9 /13;
+    border-radius: 6px;
+    border-bottom: 7px solid greenyellow;
 }
+
+.data {
+    position: fixed;
+    width: 500px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 12px;
+}
+
+.score,
+.time,
+.level,
+.lives {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 5px;
+    font-weight: bold;
+    color: greenyellow;
+}
+
+.heart {
+    width: 30px;
+    height: 30px;
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: rgba(20, 20, 20, 0.9);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  text-align: center;
+  min-width: 280px;
+}
+
 
 /* fusée */
 #rocket {
-  width: 40px;
-  height: 70px;
-  margin-top: 470px;
-  margin-left: 350px;
-  background-image: url("../pictures/fusée.png");
-  background-size: contain;
-  will-change: transform;
+    width: 40px;
+    height: 70px;
+    margin-top: 470px;
+    margin-left: 350px;
+    background-image: url("../pictures/fusée.png");
+    background-size: contain;
+    will-change: transform;
 }
 
 
-.projectile{
-  height: 10px;
-  width: 10px;
-  background: red;
-  position: fixed;
-  will-change: transform;
+.projectile {
+    height: 10px;
+    width: 10px;
+    background: red;
+    position: fixed;
+    will-change: transform;
 }
