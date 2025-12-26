@@ -12,9 +12,6 @@ export const gameData = {
   isRunning: false,
 }
 
-const startGame = () => {
-}
-
 // const popup = document.getElementById("popup")
 // const resumeBtn = document.getElementById("resume")
 
@@ -32,60 +29,52 @@ const startGame = () => {
 //   if (e.key === "Escape") openPopup()
 // })
 
-export const createGameBoard = () => {
-  const fragment = document.createDocumentFragment()
+export const startGame = () => {
+  document.body.style.minHeight = '10vh'
 
-  // document.createElement("div")
+  document.body.innerHTML = `
+  <div class="popup"></div>
 
-  // const startPopup = document.createElement("div")
-  // startPopup.className = "start-popup"
-  // startPopup.textContent = "popup"
-  // fragment.append(startPopup)
+  <div class="start-popup"></div>
+  <div class="pause-popup"></div>
 
-  const wrapper = document.createElement("div")
-  wrapper.className = "wrapper"
+  <div class="wrapper">
+    <div class="data">
+      <span class="level">Level: 1</span>
+      <span class="time">Time: 0</span>
+      <span class="score">Score: 0</span>
+      <span class="lives">
+        Lives:
+        ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(3)}
+      </span>
+    </div>
 
-  const hud = document.createElement("div")
-  hud.className = "data"
-
-  const container = document.createElement("div")
-  container.className = "container"
-
-  wrapper.append(hud, container)
-  fragment.append(wrapper)
-
-  const level = document.createElement("span")
-  level.className = "level"
-  level.textContent = "Level: " + gameData.level
-  hud.append(level)
-
-  const time = document.createElement("span")
-  time.className = "time"
-  time.textContent = "Time: " + gameData.startTime
-  hud.append(time)
-
-  const score = document.createElement("span")
-  score.className = "score"
-  score.textContent = "Score: " + gameData.score
-  hud.append(score)
-
-  const lives = document.createElement("span")
-  lives.className = "lives"
-  lives.textContent = "Lives: "
-  hud.append(lives)
-
-  for (let i = 0; i < gameData.lives; i++) {
-    const heart = document.createElement("img")
-    heart.className = "heart"
-    heart.src = "./assets/pictures/heart.png"
-    lives.append(heart)
-  }
-
+    <div class="container" id="ctn"></div>
+  </div>
+`
+  const container = document.getElementById("ctn")
   // InitlizeTheEnemies(container)
-
   rocket = new Rocket()
   rocket.create(container)
+}
 
-  document.body.append(fragment)
-  startGame()
+const handleStart = (e) => {
+  if (e.type === "click" || e.key === "Enter") {
+    startGame()
+  }
+}
+
+export const renderStart = () => {
+  document.body.innerHTML = `
+    <div class="home-container">
+    <h1 class="title">SPACE INVADERS</h1>
+    <p class="subtitle">Protect your planet</p>
+    <div id="btn-start"><button class="btn">▶ Play</button></div>
+  </div>
+  `
+  const startBtn = document.getElementById("btn-start")
+
+  startBtn.addEventListener("click", handleStart, { once: true })
+  document.addEventListener("keydown", handleStart, { once: true })
+
 }

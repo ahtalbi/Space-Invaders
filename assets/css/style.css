@@ -1,93 +1,140 @@
-body {
-    margin: 20px;
-    background-image: url("../pictures/starfield_alpha.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    font-size: large;
-    font-family: "Orbitron", sans-serif;
-}
+   * {
+       margin: 0;
+       padding: 0;
+       box-sizing: border-box;
+   }
 
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+   body {
+       min-height: 80vh;
+       color: #00ff41;
+       display: flex;
+       justify-content: center;
+       align-items: center; 
+       margin: 20px;
+       background-image: url("../pictures/starfield_alpha.png");
+       background-repeat: no-repeat;
+       background-size: cover;
+       background-attachment: fixed;
+       font-size: large;
+       font-family: "Orbitron", "Courier New" sans-serif;
+   }
 
-.container {
-    position: fixed;
-    margin-top: auto;
-    position: fixed;
-    width: 500px;
-    aspect-ratio: 9 /13;
-    border-radius: 6px;
-    border-bottom: 7px solid greenyellow;
-    /* border: 2px solid greenyellow; */
+   .home-container {
+       text-align: center;
+   }
 
-}
+   .title {
+       font-size: 8vw;
+       font-weight: bold;
+       color: #00ff41;
+       text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41;
+       margin-bottom: 3vw;
+       letter-spacing: 5px;
+   }
 
-.data {
-    position: fixed;
-    width: 500px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-radius: 12px;
-}
-
-.score,
-.time,
-.level,
-.lives {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 5px;
-    font-weight: bold;
-    color: greenyellow;
-}
-
-.heart {
-    width: 30px;
-    height: 30px;
-}
-
-.popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup {
-  background: rgba(20, 20, 20, 0.9);
-  color: white;
-  padding: 20px 30px;
-  border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  text-align: center;
-  min-width: 280px;
-}
+   .subtitle {
+       font-size: 2.5vw;
+       color: #0ff;
+       margin-bottom: 6vw;
+   }
 
 
-/* fusée */
-#rocket {
-    background-repeat: no-repeat;
-    width: auto;
-    height: 50px;
-    margin-top: 120%;
-    margin-left: 46%;
-    background-image: url("../pictures/fusée.png");
-    background-size: contain;
-    will-change: transform;
-}
+   .btn {
+       background: transparent;
+       border: 3px solid #00ff41;
+       color: #00ff41;
+       padding: 2vw 5vw;
+       font-size: 2vw;
+       font-family: 'Courier New', monospace;
+       cursor: pointer;
+       position: relative;
+       overflow: hidden;
+   }
 
-.projectile {
-    height: 40px;
-    width: auto;
-    position: fixed;
-    will-change: transform;
-}
+   .btn:hover {
+       box-shadow: 0 0 20px #00ff41;
+       transform: scale(1.20);
+   }
+
+
+   .wrapper {
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+   }
+
+   .container {
+       position: fixed;
+       margin-top: auto;
+       position: fixed;
+       width: 500px;
+       aspect-ratio: 9 /13;
+       border-radius: 6px;
+       border-bottom: 7px solid greenyellow;
+   }
+
+   .data {
+       position: fixed;
+       width: 500px;
+       display: flex;
+       justify-content: space-around;
+       align-items: center;
+       border-radius: 12px;
+   }
+
+   .score,
+   .time,
+   .level,
+   .lives {
+       display: flex;
+       flex-direction: row;
+       align-items: center;
+       margin: 5px;
+       font-weight: bold;
+       color: greenyellow;
+   }
+
+   .heart {
+       width: 30px;
+       height: 30px;
+   }
+
+   /* .popup-overlay {
+       position: fixed;
+       inset: 0;
+       background: rgba(0, 0, 0, 0.6);
+       display: none;
+       justify-content: center;
+       align-items: center;
+       z-index: 1000;
+   }
+
+   .popup {
+       background: rgba(20, 20, 20, 0.9);
+       color: white;
+       padding: 20px 30px;
+       border-radius: 12px;
+       border: 2px solid rgba(255, 255, 255, 0.3);
+       text-align: center;
+       min-width: 280px;
+   } */
+
+
+   /* fusée */
+   #rocket {
+       background-repeat: no-repeat;
+       width: auto;
+       height: 50px;
+       margin-top: 120%;
+       margin-left: 46%;
+       background-image: url("../pictures/fusée.png");
+       background-size: contain;
+       will-change: transform;
+   }
+
+   .projectile {
+       height: 40px;
+       width: auto;
+       position: fixed;
+       will-change: transform;
+   }
