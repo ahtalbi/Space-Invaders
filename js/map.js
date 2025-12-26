@@ -12,22 +12,17 @@ export const gameData = {
   isRunning: false,
 }
 
-// const popup = document.getElementById("popup")
-// const resumeBtn = document.getElementById("resume")
+export const openPausePopup = () => {
+  const pausePopup = document.querySelector('.pause-popup')
+  pausePopup.style.display = 'flex'
+  gameData.isRunning = false
+}
 
-// function openPopup() {
-//   popup.style.display = "flex"
-// }
-
-// function closePopup() {
-//   popup.style.display = "none"
-// }
-
-// resumeBtn.addEventListener("click", closePopup)
-// document.addEventListener("keydown", e => {
-//   console.log(e.key)
-//   if (e.key === "Escape") openPopup()
-// })
+export const closePausePopup = () => {
+  const pausePopup = document.querySelector('.pause-popup')
+  pausePopup.style.display = 'none'
+  gameData.isRunning = true
+}
 
 export const startGame = () => {
   document.body.style.minHeight = '10vh'
@@ -36,7 +31,23 @@ export const startGame = () => {
   <div class="popup"></div>
 
   <div class="start-popup"></div>
-  <div class="pause-popup"></div>
+  
+  <div class="pause-popup">
+    <div class="pause-content">
+      <h2 class="pause-title">PAUSE</h2>
+      <div class="pause-buttons">
+        <button class="pause-btn resume-btn" id="resume-btn">
+          ▶ Resume
+        </button>
+        <button class="pause-btn restart-btn" id="restart-btn">
+          ↻ Restart
+        </button>
+        <button class="pause-btn quit-btn" id="quit-btn">
+          X Quit
+        </button>
+      </div>
+    </div>
+  </div>
 
   <div class="wrapper">
     <div class="data">
@@ -53,9 +64,18 @@ export const startGame = () => {
   </div>
 `
   const container = document.getElementById("ctn")
+
   // InitlizeTheEnemies(container)
+
   rocket = new Rocket()
   rocket.create(container)
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && gameData.isRunning) openPausePopup()
+    else if (e.key === 'Escape' && !gameData.isRunning) closePausePopup()
+  })
+
+  gameData.isRunning = true
 }
 
 const handleStart = (e) => {
@@ -76,5 +96,4 @@ export const renderStart = () => {
 
   startBtn.addEventListener("click", handleStart, { once: true })
   document.addEventListener("keydown", handleStart, { once: true })
-
 }
