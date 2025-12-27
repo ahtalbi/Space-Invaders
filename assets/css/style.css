@@ -68,7 +68,7 @@ body {
     width: 500px;
     aspect-ratio: 9 /13;
     border-radius: 6px;
-    border-bottom: 7px solid greenyellow;
+    border: 7px solid greenyellow;
 }
 
 .data {

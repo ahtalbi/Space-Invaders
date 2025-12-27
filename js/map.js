@@ -65,7 +65,7 @@ export const startGame = () => {
 `
   const container = document.getElementById("ctn")
 
-  // InitlizeTheEnemies(container)
+  InitlizeTheEnemies(container)
 
   rocket = new Rocket()
   rocket.create(container)
