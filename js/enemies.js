@@ -13,7 +13,8 @@ let configEnemies = {
 let configEnemiesBullets = {
     bullets: [],
     speed: 3,
-    numberOfBullets: 3
+    minBullets: 1,
+    maxBullets: 3,
 }
 
 // this represent the enemy object, it can create and update the enemy position, also includes live or dead
