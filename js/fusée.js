@@ -63,6 +63,11 @@ export class Rocket {
     };
     requestAnimationFrame(shoot);
   }
+
+  // there are 3 lives, any touch with the animies projectile minimize lives by 1
+  livesDone(){}
+  // speed change based on the current level
+  changeSpeed(){}
 }
 
 window.addEventListener("keydown", (e) => {
