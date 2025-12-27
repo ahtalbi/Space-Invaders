@@ -68,7 +68,7 @@ body {
     width: 500px;
     aspect-ratio: 9 /13;
     border-radius: 6px;
-    border: 7px solid greenyellow;
+    border-bottom: 7px solid greenyellow;
 }
 
 .data {
@@ -170,7 +170,7 @@ body {
     background-repeat: no-repeat;
     width: auto;
     height: 50px;
-    margin-top: 120%;
+    margin-top: 130%;
     margin-left: 46%;
     background-image: url("../pictures/fusée.png");
     background-size: contain;
