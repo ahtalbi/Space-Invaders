@@ -2,19 +2,23 @@ let configEnemies = {
     speed: 2,
     numberEnemies: 15,
     numberOfEnemiesInLine: 5,
-    width: 70,
+    width: 60,
     leftWall: 0,
     rightWall: 0,
+    bottomWall: 0,
     arrOfEnemies: [],
     containerEnemies: document.createElement("div"),
     goingRight: true,
 }
 
-let configEnemiesBullets = {
-    bullets: [],
-    speed: 3,
-    minBullets: 1,
-    maxBullets: 3,
+let configBulletsEnemies = {
+    speed: 4,
+    width: 7,
+    height: 7,
+    minEnShot: 1,
+    maxEnShot: 2,
+    minEnShotTime: 100,
+    maxEnShotTime: 1000,
 }
 
 // this represent the enemy object, it can create and update the enemy position, also includes live or dead
@@ -44,6 +48,40 @@ class enemy {
         }
         container.append(this.enemyElement);
     }
+
+    shotTheBullete() {
+        let bullet = document.createElement("div");
+        bullet.classList.add("enemyProjectile");
+        bullet.style.position = "absolute";
+        bullet.style.width = `${configBulletsEnemies.width}px`;
+        bullet.style.height = `${configBulletsEnemies.height}px`;
+        bullet.style.backgroundColor = "red";
+        bullet.style.borderRadius = "50%";
+
+        let enemyRect = this.enemyElement.getBoundingClientRect();
+        let parentRect = this.enemyElement.offsetParent.offsetParent.getBoundingClientRect();
+
+        bullet.style.left = `${enemyRect.left - parentRect.left + configEnemies.width / 2 - configBulletsEnemies.width / 2}px`;
+        bullet.style.top = `${enemyRect.bottom - parentRect.top}px`;
+        bullet.style.zIndex = "999999";
+
+        this.enemyElement.offsetParent.offsetParent.append(bullet);
+
+        function moveBullet() {
+            let bulletRect = bullet.getBoundingClientRect();
+            let currentTop = parseInt(bullet.style.top, 10);
+            bullet.style.top = `${currentTop + configBulletsEnemies.speed}px`;
+
+            if (bulletRect.bottom >= configEnemies.bottomWall - 5) {
+                bullet.remove();
+                return;
+            }
+
+            requestAnimationFrame(moveBullet);
+        }
+
+        requestAnimationFrame(moveBullet);
+    }
 }
 
 // this function for the movment of the enemies 
@@ -68,7 +106,7 @@ function moveTheEnemies() {
             configEnemies.containerEnemies.style.left = parseInt(configEnemies.containerEnemies.style.left, 10) - configEnemies.speed + `px`;
         }
     }
-    requestAnimationFrame(() => moveTheEnemies());
+    requestAnimationFrame(moveTheEnemies);
 }
 
 // just to check if the element b in our case its the bullet is inside a which is the enemy
@@ -113,7 +151,7 @@ function updateEnemiesContainerSize() {
 
     configEnemies.containerEnemies.style.left = (parseInt(configEnemies.containerEnemies.style.left, 10) + minLeft) + "px";
     configEnemies.containerEnemies.style.top = (parseInt(configEnemies.containerEnemies.style.top, 10) + minTop) + "px";
-    
+
     configEnemies.containerEnemies.style.width = (maxRight - minLeft) + "px";
     configEnemies.containerEnemies.style.height = (maxBottom - minTop) + "px";
 }
@@ -126,12 +164,32 @@ function enemyDie() {
             if (isTheBulletInside(bullets[i], configEnemies.arrOfEnemies[j].enemyElement)) {
                 configEnemies.arrOfEnemies[j].enemyElement.remove();
                 configEnemies.arrOfEnemies.splice(j, 1);
+                if (configEnemies.arrOfEnemies.length === 0) {
+                    // next level
+                }
                 bullets[i].remove();
                 updateEnemiesContainerSize();
             }
         }
     }
-    requestAnimationFrame(() => enemyDie());
+    requestAnimationFrame(enemyDie);
+}
+
+function enemiesShots() {
+    let n = configEnemies.arrOfEnemies.length;
+    if (n === 0) {
+        let delay = Math.random() * (configBulletsEnemies.maxEnShotTime - configBulletsEnemies.minEnShotTime) + configBulletsEnemies.minEnShotTime;
+        setTimeout(enemiesShots, delay);
+        return;
+    }
+
+    for (let i = configBulletsEnemies.minEnShot; i <= configBulletsEnemies.maxEnShot; i++) {
+        let ind = Math.floor(Math.random() * n);
+        configEnemies.arrOfEnemies[ind].shotTheBullete();
+    }
+
+    let delay = Math.random() * (configBulletsEnemies.maxEnShotTime - configBulletsEnemies.minEnShotTime) + configBulletsEnemies.minEnShotTime;
+    setTimeout(enemiesShots, delay);
 }
 
 // this function is for initialize and create all enemies
@@ -139,6 +197,7 @@ export function InitlizeTheEnemies(container) {
     let detContainer = container.getBoundingClientRect();
     configEnemies.leftWall = detContainer.left;
     configEnemies.rightWall = detContainer.right;
+    configEnemies.bottomWall = detContainer.bottom;
     configEnemies.containerEnemies.style.top = "30px";
     configEnemies.containerEnemies.style.left = "0px";
     configEnemies.containerEnemies.style.zIndex = "99999999";
@@ -152,6 +211,7 @@ export function InitlizeTheEnemies(container) {
         configEnemies.arrOfEnemies.push(en);
     }
     container.append(configEnemies.containerEnemies);
-    requestAnimationFrame(() => moveTheEnemies());
-    requestAnimationFrame(() => enemyDie());
+    requestAnimationFrame(moveTheEnemies);
+    requestAnimationFrame(enemiesShots);
+    requestAnimationFrame(enemyDie);
 }

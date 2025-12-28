@@ -98,7 +98,9 @@ export const renderStart = () => {
   document.addEventListener("keydown", handleStart, { once: true })
 }
 
-const triggerGameOver = () => {
+export const triggerGameOver = () => {
+  alert("You die");
+  
 }
 
 const updateScore = (point) => {
@@ -116,10 +118,10 @@ const updateLevel = (newLevel) => {
 }
 
 
-const removeOneLife = () => {
+export const removeOneLife = () => {
   const lastHeart = document.querySelector(".heart:last-of-type")
   gameData.lives --
   lastHeart.remove()
 
-  if (gameData.lives === 0) triggerGameOver()
+  if (gameData.lives === 0) triggerGameOver();
 }

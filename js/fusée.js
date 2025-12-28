@@ -40,7 +40,7 @@ export class Rocket {
   }
   // start shooting
   startTireProjectile() {
-    if (this.tireNow && Date.now() - this.tireNow < 150) return;
+    if (this.tireNow && Date.now() - this.tireNow < 300) return;
     this.tireNow = Date.now();
     let projectile = document.createElement("img");
     projectile.className = "projectile";
