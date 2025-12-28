@@ -17,8 +17,8 @@ let configBulletsEnemies = {
     height: 7,
     minEnShot: 1,
     maxEnShot: 2,
-    minEnShotTime: 100,
-    maxEnShotTime: 1000,
+    minEnShotTime: 500,
+    maxEnShotTime: 2000,
 }
 
 // this represent the enemy object, it can create and update the enemy position, also includes live or dead
@@ -161,14 +161,29 @@ function enemyDie() {
     const bullets = document.querySelectorAll(".projectile");
     for (let i = 0; i < bullets.length; i++) {
         for (let j = 0; j < configEnemies.arrOfEnemies.length; j++) {
-            if (isTheBulletInside(bullets[i], configEnemies.arrOfEnemies[j].enemyElement)) {
+            let enemyEl = configEnemies.arrOfEnemies[j];
+            if (isTheBulletInside(bullets[i], enemyEl.enemyElement)) {
+                const destroyAnimation = document.createElement("img");
+                destroyAnimation.src = "assets/pictures/enemies/destroyed.gif";
+                destroyAnimation.style.position = "absolute";
+                destroyAnimation.style.left = enemyEl.enemyElement.style.left;
+                destroyAnimation.style.top = enemyEl.enemyElement.style.top;
+                destroyAnimation.style.width = configEnemies.width + "px";
+                destroyAnimation.style.height = configEnemies.width + "px";
+
+                configEnemies.containerEnemies.appendChild(destroyAnimation);
+
+                setTimeout(() => {
+                    destroyAnimation.remove();
+                    updateEnemiesContainerSize();
+                }, 1000);
+
                 configEnemies.arrOfEnemies[j].enemyElement.remove();
                 configEnemies.arrOfEnemies.splice(j, 1);
                 if (configEnemies.arrOfEnemies.length === 0) {
                     // next level
                 }
                 bullets[i].remove();
-                updateEnemiesContainerSize();
             }
         }
     }
