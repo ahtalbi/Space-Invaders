@@ -1,5 +1,5 @@
 import { Rocket } from "./fusée.js"
-import { InitlizeTheEnemies } from "./enemies.js"
+import { gameLoop, InitlizeTheEnemies } from "./enemies.js"
 
 export let rocket = null
 let ID = undefined
@@ -99,10 +99,13 @@ export const startGame = () => {
   gameData.isRunning = true
   updateTime()
 
-  document.getElementById("resume-btn").addEventListener("click", () => closePopup("pause-popup"))
+  document.getElementById("resume-btn").addEventListener("click", () => {
+    closePopup("pause-popup")
+    gameLoop(container);
+  })
   document.getElementById("pause-quit-btn").addEventListener("click", () => location.reload())
   document.getElementById("gameover-quit-btn").addEventListener("click", () => location.reload())
-  document.getElementById("pause-restart-btn").addEventListener("click" , () => {
+  document.getElementById("pause-restart-btn").addEventListener("click", () => {
     document.body.wrapper.container.innerHTML = ''
   })
   document.getElementById("gameover-restart-btn")

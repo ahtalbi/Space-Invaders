@@ -20,7 +20,7 @@ let configBulletsEnemies = {
     maxEnShot: 1,
     minEnShotTime: 1000,
     maxEnShotTime: 3000,
-    activeBullets: []
+    activeBullets: [],
 }
 
 // this represent the enemy object, it can create and update the enemy position, also includes live or dead
@@ -69,21 +69,27 @@ class enemy {
 
         this.enemyElement.offsetParent.offsetParent.append(bullet);
 
-        function moveBullet() {
-            if (!gameData.isRunning) return;
-            let bulletRect = bullet.getBoundingClientRect();
-            let currentTop = parseInt(bullet.style.top, 10);
-            bullet.style.top = `${currentTop + configBulletsEnemies.speed}px`;
+        configBulletsEnemies.activeBullets.push(bullet);
+    }
+}
 
-            if (bulletRect.bottom >= configEnemies.bottomWall - 5) {
-                bullet.remove();
-                return;
-            }
+function moveBullets() {
+    for (let i = configBulletsEnemies.activeBullets.length - 1; i >= 0; i--) {
+        let bullet = configBulletsEnemies.activeBullets[i];
 
-            requestAnimationFrame(moveBullet);
+        if (!bullet.parentNode) {
+            configBulletsEnemies.activeBullets.splice(i, 1);
+            continue;
         }
 
-        requestAnimationFrame(moveBullet);
+        let currentTop = parseInt(bullet.style.top, 10);
+        bullet.style.top = `${currentTop + configBulletsEnemies.speed}px`;
+
+        let bulletRect = bullet.getBoundingClientRect();
+        if (bulletRect.bottom >= configEnemies.bottomWall - 5) {
+            bullet.remove();
+            configBulletsEnemies.activeBullets.splice(i, 1);
+        }
     }
 }
 
@@ -220,12 +226,15 @@ function enemiesShots() {
     setTimeout(enemiesShots, delay);
 }
 
-function gameLoop(container) {
+export function gameLoop(container) {
+    console.log("game is running")
     if (!gameData.isRunning) return;
+    
     let detContainer = container.getBoundingClientRect();
     configEnemies.leftWall = detContainer.left;
     configEnemies.rightWall = detContainer.right;
     configEnemies.bottomWall = detContainer.bottom;
+    moveBullets();
     moveTheEnemies();
     enemyDie();
     requestAnimationFrame(() => gameLoop(container));
