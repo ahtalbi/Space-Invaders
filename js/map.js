@@ -139,7 +139,7 @@ export const renderStart = () => {
 export const triggerGameOver = () => {
   const gameover = document.getElementById("gameover-popup")
   gameover.style.display = "flex"
-
+  gameData.isRunning =false
 }
 
 const updateScore = (point) => {

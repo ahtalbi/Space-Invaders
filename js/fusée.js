@@ -1,4 +1,5 @@
-import { rocket } from "./map.js";
+import { rocket, gameData, removeOneLife } from "./map.js";
+import {isTheBulletInside} from "./enemies.js"
 
 let vars = {
   pressleft: false,
@@ -64,10 +65,24 @@ export class Rocket {
     requestAnimationFrame(shoot);
   }
 
-  // there are 3 lives, any touch with the animies projectile minimize lives by 1
-  livesDone(){}
+  // a rocket flash happen when a projectile touch it
+  flash() {
+    let show = false;
+    let i = 0;
+
+    let interval = setInterval(() => {
+      rocket.rocket.style.display = show ? "block" : "none";
+      show = !show;
+      i++;
+      if (i > 10) {
+        clearInterval(interval);
+        rocket.rocket.style.display = "block";
+      }
+    }, 200);
+  }
+
   // speed change based on the current level
-  changeSpeed(){}
+  changeSpeed() {}
 }
 
 window.addEventListener("keydown", (e) => {
@@ -79,7 +94,7 @@ window.addEventListener("keydown", (e) => {
       vars.pressrigth = true;
       break;
     case " ":
-      rocket.startTireProjectile();
+      if (gameData.isRunning) rocket.startTireProjectile();
   }
 });
 
@@ -102,5 +117,14 @@ export function moveRocket() {
     if (vars.pressrigth) rocket.moveRight(10);
     vars.timerMove = now;
   }
-  requestAnimationFrame(moveRocket);
+
+  // check any touch between projectile & rcoket
+  document.querySelectorAll(".enemyProjectile").forEach((ele) => {
+    if (isTheBulletInside(ele, rocket?.rocket)) {
+      removeOneLife();
+      rocket.flash();
+      ele.remove();
+    }
+  });
+  if (gameData.isRunning) requestAnimationFrame(moveRocket);
 }
