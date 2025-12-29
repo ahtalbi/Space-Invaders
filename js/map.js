@@ -93,7 +93,10 @@ export const startGame = () => {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && gameData.isRunning) openPopup("pause-popup")
-    else if (e.key === 'Escape' && !gameData.isRunning) closePopup("pause-popup")
+    else if (e.key === 'Escape' && !gameData.isRunning) {
+      closePopup("pause-popup")
+      gameLoop(container);
+    }
   })
 
   gameData.isRunning = true
@@ -103,8 +106,10 @@ export const startGame = () => {
     closePopup("pause-popup")
     gameLoop(container);
   })
+
   document.getElementById("pause-quit-btn").addEventListener("click", () => location.reload())
   document.getElementById("gameover-quit-btn").addEventListener("click", () => location.reload())
+  
   document.getElementById("pause-restart-btn").addEventListener("click", () => {
     document.body.wrapper.container.innerHTML = ''
   })
