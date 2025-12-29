@@ -1,6 +1,6 @@
 import { gameData } from "./map.js";
 
-let configEnemies = {
+export let configEnemies = {
     speed: 2,
     numberEnemies: 15,
     numberOfEnemiesInLine: 5,
@@ -13,7 +13,7 @@ let configEnemies = {
     goingRight: true,
 }
 
-let configBulletsEnemies = {
+export let configBulletsEnemies = {
     speed: 4,
     width: 60,
     minEnShot: 0,
@@ -227,7 +227,6 @@ function enemiesShots() {
 }
 
 export function gameLoop(container) {
-    console.log("game is running")
     if (!gameData.isRunning) return;
     
     let detContainer = container.getBoundingClientRect();
