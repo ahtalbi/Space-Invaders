@@ -1,5 +1,5 @@
 import { Rocket } from "./fusée.js"
-import { gameLoop, InitlizeTheEnemies } from "./enemies.js"
+import { configEnemies, gameLoop, InitlizeTheEnemies } from "./enemies.js"
 import { moveRocket } from "./fusée.js";////
 
 export let rocket = null
@@ -119,6 +119,8 @@ export const startGame = () => {
   document.getElementById("gameover-quit-btn").addEventListener("click", () => location.reload())
 
   document.getElementById("pause-restart-btn").addEventListener("click", () => {
+    configEnemies.containerEnemies = document.createElement("div");
+    configEnemies.arrOfEnemies = [];
     container.innerHTML = ""
     console.log(container)
     rocket = new Rocket()

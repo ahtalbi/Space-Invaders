@@ -1,4 +1,4 @@
-import { gameData } from "./map.js";
+import { gameData, triggerGameOver, triggerWinning } from "./map.js";
 
 export let configEnemies = {
     speed: 2,
@@ -23,9 +23,9 @@ export let configBulletsEnemies = {
     activeBullets: [],
 }
 
-// this represent the enemy object, it can create and update the enemy position, also includes live or dead
+let shootingTimerId = null;
+
 class enemy {
-    // creates the enemy DOM element and sets its base styles
     constructor() {
         this.enemyElement = document.createElement("img");
         this.enemyElement.src = "assets/pictures/enemies/enemy.gif";
@@ -37,7 +37,6 @@ class enemy {
         this.enemyElement.style.imageRendering = "pixelated";
     }
 
-    // creates the enemy and places it relative to the previous one
     create(container, num) {
         if (num !== 0) {
             if (num % configEnemies.numberOfEnemiesInLine === 0) {
@@ -93,13 +92,8 @@ function moveBullets() {
     }
 }
 
-// this function for the movment of the enemies 
 function moveTheEnemies() {
     let detEnemies = configEnemies.containerEnemies.getBoundingClientRect();
-    if (detEnemies.bottom >= document.getElementById("rocket").getBoundingClientRect().top) {
-        console.log("YOU DIE");
-        return;
-    };
     if (configEnemies.goingRight) {
         if (detEnemies.right >= configEnemies.rightWall) {
             configEnemies.containerEnemies.style.top = parseInt(configEnemies.containerEnemies.style.top, 10) + configEnemies.speed * 3 + `px`;
@@ -117,7 +111,6 @@ function moveTheEnemies() {
     }
 }
 
-// just to check if the element b in our case its the bullet is inside a which is the enemy
 export function isTheBulletInside(a, b) {
     const ra = a.getBoundingClientRect();
     const rb = b.getBoundingClientRect();
@@ -130,7 +123,6 @@ export function isTheBulletInside(a, b) {
     );
 }
 
-// this function is to update the enemies position after each print of the frame on the browser if it changes
 function updateEnemiesContainerSize() {
     const enemies = configEnemies.arrOfEnemies;
     if (enemies.length === 0) return;
@@ -164,7 +156,6 @@ function updateEnemiesContainerSize() {
     configEnemies.containerEnemies.style.height = (maxBottom - minTop) + "px";
 }
 
-// this function is to delet the enemy when he die
 function enemyDie() {
     const bullets = document.querySelectorAll(".projectile");
 
@@ -197,7 +188,7 @@ function enemyDie() {
                 }, 150);
 
                 if (configEnemies.arrOfEnemies.length === 0) {
-                    console.log("Level completed!");
+                    triggerWinning()
                 }
 
                 br = true;
@@ -223,7 +214,7 @@ function enemiesShots() {
     }
 
     let delay = Math.random() * (configBulletsEnemies.maxEnShotTime - configBulletsEnemies.minEnShotTime) + configBulletsEnemies.minEnShotTime;
-    setTimeout(enemiesShots, delay);
+    shootingTimerId = setTimeout(enemiesShots, delay);
 }
 
 export function gameLoop(container) {
@@ -239,8 +230,36 @@ export function gameLoop(container) {
     requestAnimationFrame(() => gameLoop(container));
 }
 
-// this function is for initialize and create all enemies
+export function cleanupEnemies() {
+    if (shootingTimerId) {
+        clearTimeout(shootingTimerId);
+        shootingTimerId = null;
+    }
+    
+    configBulletsEnemies.activeBullets.forEach(bullet => {
+        if (bullet.parentNode) bullet.remove();
+    });
+    configBulletsEnemies.activeBullets = [];
+    
+    configEnemies.arrOfEnemies.forEach(enemy => {
+        if (enemy.enemyElement.parentNode) enemy.enemyElement.remove();
+    });
+    configEnemies.arrOfEnemies = [];
+    
+    if (configEnemies.containerEnemies.parentNode) {
+        configEnemies.containerEnemies.remove();
+    }
+    
+    configEnemies.containerEnemies = document.createElement("div");
+    configEnemies.goingRight = true;
+}
+
 export function InitlizeTheEnemies(container) {
+    if (shootingTimerId) {
+        clearTimeout(shootingTimerId);
+        shootingTimerId = null;
+    }
+    
     configEnemies.containerEnemies.style.top = "30px";
     configEnemies.containerEnemies.style.left = "0px";
     configEnemies.containerEnemies.style.zIndex = "30";
