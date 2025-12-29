@@ -12,6 +12,7 @@ export let gameData = {
   lives: 3,
   level: 1,
   isRunning: false,
+  isover: false,
 }
 
 export const openPopup = (popupName) => {
@@ -93,11 +94,14 @@ export const startGame = () => {
   rocket.create(container)
 
   document.addEventListener('keydown', (e) => {
+    if (gameData.isover) return
+
     if (e.key === 'Escape' && gameData.isRunning) openPopup("pause-popup")
     else if (e.key === 'Escape' && !gameData.isRunning) {
       closePopup("pause-popup")
-      moveRocket()//////
+      moveRocket()
       gameLoop(container);
+      updateTime()
     }
   })
 
@@ -106,13 +110,14 @@ export const startGame = () => {
 
   document.getElementById("resume-btn").addEventListener("click", () => {
     closePopup("pause-popup")
-    moveRocket()////////
+    moveRocket()
     gameLoop(container);
+    updateTime()
   })
 
   document.getElementById("pause-quit-btn").addEventListener("click", () => location.reload())
   document.getElementById("gameover-quit-btn").addEventListener("click", () => location.reload())
-  
+
   document.getElementById("pause-restart-btn").addEventListener("click", () => {
     document.body.wrapper.container.innerHTML = ''
   })
@@ -142,7 +147,22 @@ export const renderStart = () => {
 export const triggerGameOver = () => {
   const gameover = document.getElementById("gameover-popup")
   gameover.style.display = "flex"
-  gameData.isRunning =false
+  gameData.isRunning = false
+  gameData.isover = true
+}
+
+export const triggerWinning = () => {
+  gameData.isover = true
+  openPopup("won-popup")
+  setTimeout(() => {
+    restart()
+    closePopup("won-popup")
+  }, 3000)
+  updateLevel()
+}
+
+const restart = () => {
+
 }
 
 const updateScore = (point) => {
@@ -152,8 +172,9 @@ const updateScore = (point) => {
 }
 
 
-const updateLevel = (newLevel) => {
-  gameData.level = newLevel
+
+const updateLevel = () => {
+  gameData.level++
   const levelEl = document.querySelector(".level")
   levelEl.textContent = "Level: " + gameData.level
 }
@@ -172,7 +193,7 @@ const updateTime = () => {
 
   timer.textContent = "Time: " + timeleft
 
-  ID = requestAnimationFrame(updateTime)
+  requestAnimationFrame(updateTime)
 }
 
 
