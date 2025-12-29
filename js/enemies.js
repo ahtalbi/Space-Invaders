@@ -1,3 +1,5 @@
+import { gameData } from "./map.js";
+
 let configEnemies = {
     speed: 2,
     numberEnemies: 15,
@@ -14,10 +16,11 @@ let configEnemies = {
 let configBulletsEnemies = {
     speed: 4,
     width: 60,
-    minEnShot: 1,
-    maxEnShot: 2,
-    minEnShotTime: 500,
-    maxEnShotTime: 2000,
+    minEnShot: 0,
+    maxEnShot: 1,
+    minEnShotTime: 1000,
+    maxEnShotTime: 3000,
+    activeBullets: []
 }
 
 // this represent the enemy object, it can create and update the enemy position, also includes live or dead
@@ -49,6 +52,7 @@ class enemy {
     }
 
     shotTheBullete() {
+        if (!gameData.isRunning) return;
         let bullet = document.createElement("img");
         bullet.classList.add("enemyProjectile");
         bullet.src = "assets/pictures/enemies/bullet.gif";
@@ -66,6 +70,7 @@ class enemy {
         this.enemyElement.offsetParent.offsetParent.append(bullet);
 
         function moveBullet() {
+            if (!gameData.isRunning) return;
             let bulletRect = bullet.getBoundingClientRect();
             let currentTop = parseInt(bullet.style.top, 10);
             bullet.style.top = `${currentTop + configBulletsEnemies.speed}px`;
@@ -203,8 +208,6 @@ function enemyDie() {
 function enemiesShots() {
     let n = configEnemies.arrOfEnemies.length;
     if (n === 0) {
-        let delay = Math.random() * (configBulletsEnemies.maxEnShotTime - configBulletsEnemies.minEnShotTime) + configBulletsEnemies.minEnShotTime;
-        setTimeout(enemiesShots, delay);
         return;
     }
 
@@ -218,6 +221,7 @@ function enemiesShots() {
 }
 
 function gameLoop(container) {
+    if (!gameData.isRunning) return;
     let detContainer = container.getBoundingClientRect();
     configEnemies.leftWall = detContainer.left;
     configEnemies.rightWall = detContainer.right;
@@ -229,7 +233,6 @@ function gameLoop(container) {
 
 // this function is for initialize and create all enemies
 export function InitlizeTheEnemies(container) {
-    
     configEnemies.containerEnemies.style.top = "30px";
     configEnemies.containerEnemies.style.left = "0px";
     configEnemies.containerEnemies.style.zIndex = "30";
