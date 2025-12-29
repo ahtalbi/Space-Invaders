@@ -1,5 +1,6 @@
 import { Rocket } from "./fusée.js"
 import { gameLoop, InitlizeTheEnemies } from "./enemies.js"
+import { moveRocket } from "./fusée.js";////
 
 export let rocket = null
 let ID = undefined
@@ -95,6 +96,7 @@ export const startGame = () => {
     if (e.key === 'Escape' && gameData.isRunning) openPopup("pause-popup")
     else if (e.key === 'Escape' && !gameData.isRunning) {
       closePopup("pause-popup")
+      moveRocket()//////
       gameLoop(container);
     }
   })
@@ -104,6 +106,7 @@ export const startGame = () => {
 
   document.getElementById("resume-btn").addEventListener("click", () => {
     closePopup("pause-popup")
+    moveRocket()////////
     gameLoop(container);
   })
 

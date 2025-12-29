@@ -54,10 +54,12 @@ export class Rocket {
     let m = r.top - 50;
 
     let shoot = () => {
-      projectile.style.top = `${m}px`;
-      m -= 5;
+      if (gameData.isRunning){
+        projectile.style.top = `${m}px`;
+        m -= 5;
+      }
       if (m > 160) {
-        requestAnimationFrame(shoot);
+         requestAnimationFrame(shoot);
       } else {
         projectile.remove();
       }
@@ -113,7 +115,7 @@ window.addEventListener("keyup", (e) => {
 export function moveRocket() {
   let now = Date.now();
   if (now - vars.timerMove >= 16) {
-    if (vars.pressleft) rocket.moveLeft(10);
+    if (vars.pressleft) rocket?.moveLeft(10);    
     if (vars.pressrigth) rocket.moveRight(10);
     vars.timerMove = now;
   }

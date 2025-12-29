@@ -3,4 +3,4 @@ import { moveRocket } from "./fusée.js";
 
 renderStart()
 gameData.isRunning = true
-requestAnimationFrame(moveRocket);
+requestAnimationFrame(moveRocket)
