@@ -49,37 +49,37 @@ class enemy {
     }
 
     shotTheBullete() {
-    let bullet = document.createElement("img");
-    bullet.classList.add("enemyProjectile");
-    bullet.src = "assets/pictures/enemies/bullet.gif";
-    bullet.style.position = "absolute";
-    bullet.style.width = `${configBulletsEnemies.width}px`;
-    bullet.style.imageRendering = "pixelated";
+        let bullet = document.createElement("img");
+        bullet.classList.add("enemyProjectile");
+        bullet.src = "assets/pictures/enemies/bullet.gif";
+        bullet.style.position = "absolute";
+        bullet.style.width = `${configBulletsEnemies.width}px`;
+        bullet.style.imageRendering = "pixelated";
 
-    let enemyRect = this.enemyElement.getBoundingClientRect();
-    let parentRect = this.enemyElement.offsetParent.offsetParent.getBoundingClientRect();
+        let enemyRect = this.enemyElement.getBoundingClientRect();
+        let parentRect = this.enemyElement.offsetParent.offsetParent.getBoundingClientRect();
 
-    bullet.style.left = `${enemyRect.left - parentRect.left + configEnemies.width / 2 - configBulletsEnemies.width / 2}px`;
-    bullet.style.top = `${enemyRect.bottom - parentRect.top}px`;
-    bullet.style.zIndex = "999999";
+        bullet.style.left = `${enemyRect.left - parentRect.left + configEnemies.width / 2 - configBulletsEnemies.width / 2}px`;
+        bullet.style.top = `${enemyRect.bottom - parentRect.top}px`;
+        bullet.style.zIndex = "15";
 
-    this.enemyElement.offsetParent.offsetParent.append(bullet);
+        this.enemyElement.offsetParent.offsetParent.append(bullet);
 
-    function moveBullet() {
-        let bulletRect = bullet.getBoundingClientRect();
-        let currentTop = parseInt(bullet.style.top, 10);
-        bullet.style.top = `${currentTop + configBulletsEnemies.speed}px`;
+        function moveBullet() {
+            let bulletRect = bullet.getBoundingClientRect();
+            let currentTop = parseInt(bullet.style.top, 10);
+            bullet.style.top = `${currentTop + configBulletsEnemies.speed}px`;
 
-        if (bulletRect.bottom >= configEnemies.bottomWall - 5) {
-            bullet.remove();
-            return;
+            if (bulletRect.bottom >= configEnemies.bottomWall - 5) {
+                bullet.remove();
+                return;
+            }
+
+            requestAnimationFrame(moveBullet);
         }
 
         requestAnimationFrame(moveBullet);
     }
-
-    requestAnimationFrame(moveBullet);
-}
 }
 
 // this function for the movment of the enemies 
@@ -104,7 +104,6 @@ function moveTheEnemies() {
             configEnemies.containerEnemies.style.left = parseInt(configEnemies.containerEnemies.style.left, 10) - configEnemies.speed + `px`;
         }
     }
-    requestAnimationFrame(moveTheEnemies);
 }
 
 // just to check if the element b in our case its the bullet is inside a which is the enemy
@@ -157,13 +156,13 @@ function updateEnemiesContainerSize() {
 // this function is to delet the enemy when he die
 function enemyDie() {
     const bullets = document.querySelectorAll(".projectile");
-    
+
     for (let i = 0; i < bullets.length; i++) {
         let br = false;
-        
+
         for (let j = 0; j < configEnemies.arrOfEnemies.length; j++) {
             let enemyEl = configEnemies.arrOfEnemies[j];
-            
+
             if (isTheBulletInside(bullets[i], enemyEl.enemyElement)) {
                 const destroyAnimation = document.createElement("img");
                 destroyAnimation.src = "assets/pictures/enemies/destroyed.gif";
@@ -173,35 +172,34 @@ function enemyDie() {
                 destroyAnimation.style.width = configEnemies.width + "px";
                 destroyAnimation.style.height = configEnemies.width + "px";
                 destroyAnimation.style.imageRendering = "pixelated";
-                
+
                 configEnemies.containerEnemies.appendChild(destroyAnimation);
-                
+
                 configEnemies.arrOfEnemies[j].enemyElement.remove();
                 configEnemies.arrOfEnemies.splice(j, 1);
-                
+
                 bullets[i].remove();
-                
+
                 setTimeout(() => {
                     destroyAnimation.remove();
                     updateEnemiesContainerSize();
                 }, 150);
-                
+
                 if (configEnemies.arrOfEnemies.length === 0) {
                     console.log("Level completed!");
                 }
-                
+
                 br = true;
                 break;
             }
         }
-        
+
         if (br) {
             break;
         }
     }
-    
-    requestAnimationFrame(enemyDie);
 }
+
 function enemiesShots() {
     let n = configEnemies.arrOfEnemies.length;
     if (n === 0) {
@@ -219,15 +217,22 @@ function enemiesShots() {
     setTimeout(enemiesShots, delay);
 }
 
-// this function is for initialize and create all enemies
-export function InitlizeTheEnemies(container) {
+function gameLoop(container) {
     let detContainer = container.getBoundingClientRect();
     configEnemies.leftWall = detContainer.left;
     configEnemies.rightWall = detContainer.right;
     configEnemies.bottomWall = detContainer.bottom;
+    moveTheEnemies();
+    enemyDie();
+    requestAnimationFrame(() => gameLoop(container));
+}
+
+// this function is for initialize and create all enemies
+export function InitlizeTheEnemies(container) {
+    
     configEnemies.containerEnemies.style.top = "30px";
     configEnemies.containerEnemies.style.left = "0px";
-    configEnemies.containerEnemies.style.zIndex = "99999999";
+    configEnemies.containerEnemies.style.zIndex = "30";
     configEnemies.containerEnemies.style.width = (configEnemies.width * (configEnemies.numberOfEnemiesInLine - 1) + configEnemies.width) + "px";
     configEnemies.containerEnemies.style.height = (Math.ceil(configEnemies.numberEnemies / configEnemies.numberOfEnemiesInLine) - 1) * configEnemies.width + configEnemies.width + "px";
     configEnemies.containerEnemies.style.position = "absolute";
@@ -238,7 +243,6 @@ export function InitlizeTheEnemies(container) {
         configEnemies.arrOfEnemies.push(en);
     }
     container.append(configEnemies.containerEnemies);
-    requestAnimationFrame(moveTheEnemies);
-    requestAnimationFrame(enemiesShots);
-    requestAnimationFrame(enemyDie);
+    enemiesShots();
+    requestAnimationFrame(() => gameLoop(container));
 }
