@@ -208,18 +208,40 @@ function enemiesShots() {
         return;
     }
 
-    for (let i = configBulletsEnemies.minEnShot; i <= configBulletsEnemies.maxEnShot; i++) {
+    const alreadyShot = new Set();
+
+    function shootOnce(tries = 0) {
+        if (tries >= 5) return;
+
         let ind = Math.floor(Math.random() * n);
-        configEnemies.arrOfEnemies[ind].shotTheBullete();
+        let enemy = configEnemies.arrOfEnemies[ind];
+
+        if (alreadyShot.has(enemy)) {
+            shootOnce(tries + 1);
+            return;
+        }
+
+        alreadyShot.add(enemy);
+        enemy.shotTheBullete();
     }
 
-    let delay = Math.random() * (configBulletsEnemies.maxEnShotTime - configBulletsEnemies.minEnShotTime) + configBulletsEnemies.minEnShotTime;
+
+    for (let i = configBulletsEnemies.minEnShot; i <= configBulletsEnemies.maxEnShot; i++) {
+        shootOnce();
+    }
+
+    let delay =
+        Math.random() *
+        (configBulletsEnemies.maxEnShotTime - configBulletsEnemies.minEnShotTime) +
+        configBulletsEnemies.minEnShotTime;
+
     shootingTimerId = setTimeout(enemiesShots, delay);
 }
 
+
 export function gameLoop(container) {
     if (!gameData.isRunning) return;
-    
+
     let detContainer = container.getBoundingClientRect();
     configEnemies.leftWall = detContainer.left;
     configEnemies.rightWall = detContainer.right;
@@ -235,21 +257,21 @@ export function cleanupEnemies() {
         clearTimeout(shootingTimerId);
         shootingTimerId = null;
     }
-    
+
     configBulletsEnemies.activeBullets.forEach(bullet => {
         if (bullet.parentNode) bullet.remove();
     });
     configBulletsEnemies.activeBullets = [];
-    
+
     configEnemies.arrOfEnemies.forEach(enemy => {
         if (enemy.enemyElement.parentNode) enemy.enemyElement.remove();
     });
     configEnemies.arrOfEnemies = [];
-    
+
     if (configEnemies.containerEnemies.parentNode) {
         configEnemies.containerEnemies.remove();
     }
-    
+
     configEnemies.containerEnemies = document.createElement("div");
     configEnemies.goingRight = true;
 }
@@ -259,7 +281,7 @@ export function InitlizeTheEnemies(container) {
         clearTimeout(shootingTimerId);
         shootingTimerId = null;
     }
-    
+
     configEnemies.containerEnemies.style.top = "30px";
     configEnemies.containerEnemies.style.left = "0px";
     configEnemies.containerEnemies.style.zIndex = "30";
