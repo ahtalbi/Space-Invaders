@@ -119,8 +119,15 @@ export const startGame = () => {
   document.getElementById("gameover-quit-btn").addEventListener("click", () => location.reload())
 
   document.getElementById("pause-restart-btn").addEventListener("click", () => {
-    document.body.wrapper.container.innerHTML = ''
+    container.innerHTML = ""
+    console.log(container)
+    rocket = new Rocket()
+    rocket.create(container)
+    InitlizeTheEnemies(container)
+    closePopup("pause-popup")
+    moveRocket()
   })
+
   document.getElementById("gameover-restart-btn")
 }
 
