@@ -2,8 +2,9 @@ import { Rocket } from "./fusée.js"
 import { InitlizeTheEnemies } from "./enemies.js"
 
 export let rocket = null
+let ID = undefined
 
-export const gameData = {
+export let gameData = {
   score: 0,
   startTime: 120,
   passedTime: 0,
@@ -24,10 +25,8 @@ export const closePopup = (popupName) => {
   gameData.isRunning = true
 }
 
-export const startGame = () => {
-  document.body.style.minHeight = '10vh'
-
-  document.body.innerHTML = `
+const generateGame = (gameData) => {
+  return `
   <div class="pause-popup" id="pause-popup">
     <div class="pause-content">
       <h2 class="pause-title">PAUSE</h2>
@@ -35,10 +34,10 @@ export const startGame = () => {
         <button class="pause-btn resume-btn" id="resume-btn">
           ▶ Resume
         </button>
-        <button class="pause-btn restart-btn" id="restart-btn">
+        <button class="pause-btn restart-btn" id="pause-restart-btn">
           ↻ Restart
         </button>
-        <button class="pause-btn quit-btn" id="quit-btn">
+        <button class="pause-btn quit-btn" id="pause-quit-btn">
           X Quit
         </button>
       </div>
@@ -47,12 +46,12 @@ export const startGame = () => {
 
   <div class="wrapper">
     <div class="data">
-      <span class="level">Level: 1</span>
-      <span class="time">Time: 120</span>
-      <span class="score">Score: 0</span>
+      <span class="level">Level: ${gameData.level} </span>
+      <span class="time">Time: ${gameData.startGame} </span>
+      <span class="score">Score: ${gameData.score}</span>
       <span class="lives">
         Lives:
-        ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(3)}
+        ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(gameData.lives)}
       </span>
     </div>
 
@@ -79,6 +78,12 @@ export const startGame = () => {
   </div>
     </div>
 `
+}
+
+export const startGame = () => {
+  document.body.style.minHeight = '10vh'
+
+  document.body.innerHTML = generateGame(gameData)
   const container = document.getElementById("ctn")
 
   InitlizeTheEnemies(container)
@@ -93,6 +98,14 @@ export const startGame = () => {
 
   gameData.isRunning = true
   updateTime()
+
+  document.getElementById("resume-btn").addEventListener("click", () => closePopup("pause-popup"))
+  document.getElementById("pause-quit-btn").addEventListener("click", () => location.reload())
+  document.getElementById("gameover-quit-btn").addEventListener("click", () => location.reload())
+  document.getElementById("pause-restart-btn").addEventListener("click" , () => {
+    document.body.wrapper.container.innerHTML = ''
+  })
+  document.getElementById("gameover-restart-btn")
 }
 
 const handleStart = (e) => {
@@ -137,12 +150,18 @@ const updateLevel = (newLevel) => {
 const updateTime = () => {
   if (!gameData.isRunning) return
   const timer = document.getElementsByClassName("time")[0]
-  console.log(timer)
 
-  const passedTime =   Math.floor( performance.now() /1000)
-  console.log(gameData.startTime)
-  timer. textContent = "Time: " + (gameData.startTime - passedTime)
-  requestAnimationFrame(updateTime)
+  const timeleft = gameData.startTime - Math.floor(performance.now() / 1000)
+
+  if (timeleft === 0) {
+    triggerGameOver()
+    cancelAnimationFrame(ID)
+    return
+  }
+
+  timer.textContent = "Time: " + timeleft
+
+  ID = requestAnimationFrame(updateTime)
 }
 
 
