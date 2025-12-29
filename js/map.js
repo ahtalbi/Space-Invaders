@@ -121,16 +121,32 @@ export const startGame = () => {
   document.getElementById("pause-restart-btn").addEventListener("click", () => {
     configEnemies.containerEnemies = document.createElement("div");
     configEnemies.arrOfEnemies = [];
-    container.innerHTML = ""
-    console.log(container)
+
+    document.getElementsByClassName("containerEnemies")[0].remove()
+    document.getElementById("rocket").remove()
+
     rocket = new Rocket()
     rocket.create(container)
     InitlizeTheEnemies(container)
     closePopup("pause-popup")
     moveRocket()
+    updateTime()
   })
 
-  document.getElementById("gameover-restart-btn")
+  document.getElementById("gameover-restart-btn").addEventListener("click", () => {
+    configEnemies.containerEnemies = document.createElement("div");
+    configEnemies.arrOfEnemies = [];
+
+    document.getElementsByClassName("containerEnemies")[0].remove()
+    document.getElementById("rocket").remove()
+
+    rocket = new Rocket()
+    rocket.create(container)
+    InitlizeTheEnemies(container)
+    closePopup("gameover-popup")
+    moveRocket()
+    updateTime()
+  })
 }
 
 const handleStart = (e) => {
