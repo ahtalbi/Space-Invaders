@@ -118,7 +118,7 @@ function moveTheEnemies() {
 }
 
 // just to check if the element b in our case its the bullet is inside a which is the enemy
-function isTheBulletInside(a, b) {
+export function isTheBulletInside(a, b) {
     const ra = a.getBoundingClientRect();
     const rb = b.getBoundingClientRect();
 
