@@ -5,22 +5,22 @@ export let rocket = null
 
 export const gameData = {
   score: 0,
-  startTime: 0,
+  startTime: 120,
   passedTime: 0,
   lives: 3,
   level: 1,
   isRunning: false,
 }
 
-export const openPausePopup = () => {
-  const pausePopup = document.querySelector('.pause-popup')
-  pausePopup.style.display = 'flex'
+export const openPopup = (popupName) => {
+  const popup = document.getElementById(popupName)
+  popup.style.display = 'flex'
   gameData.isRunning = false
 }
 
-export const closePausePopup = () => {
-  const pausePopup = document.querySelector('.pause-popup')
-  pausePopup.style.display = 'none'
+export const closePopup = (popupName) => {
+  const popup = document.getElementById(popupName)
+  popup.style.display = 'none'
   gameData.isRunning = true
 }
 
@@ -28,11 +28,7 @@ export const startGame = () => {
   document.body.style.minHeight = '10vh'
 
   document.body.innerHTML = `
-  <div class="popup"></div>
-
-  <div class="start-popup"></div>
-  
-  <div class="pause-popup">
+  <div class="pause-popup" id="pause-popup">
     <div class="pause-content">
       <h2 class="pause-title">PAUSE</h2>
       <div class="pause-buttons">
@@ -52,7 +48,7 @@ export const startGame = () => {
   <div class="wrapper">
     <div class="data">
       <span class="level">Level: 1</span>
-      <span class="time">Time: 0</span>
+      <span class="time">Time: 120</span>
       <span class="score">Score: 0</span>
       <span class="lives">
         Lives:
@@ -60,8 +56,28 @@ export const startGame = () => {
       </span>
     </div>
 
-    <div class="container" id="ctn"></div>
+    <div class="container" id="ctn">
+
+ <div class="pause-popup" id="won-popup">
+    <div class="pause-content">
+      <p class="pause-title">YOU WON!</p>
+    </div>
   </div>
+
+      <div class="pause-popup" id="gameover-popup">
+    <div class="pause-content">
+      <h2 class="pause-title">GAME OVER</h2>
+      <div class="pause-buttons">
+        <button class="pause-btn restart-btn" id="gameover-restart-btn">
+          ↻ Restart
+        </button>
+        <button class="pause-btn quit-btn" id="gameover-quit-btn">
+          X Quit
+        </button>
+      </div>
+    </div>
+  </div>
+    </div>
 `
   const container = document.getElementById("ctn")
 
@@ -71,11 +87,12 @@ export const startGame = () => {
   rocket.create(container)
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && gameData.isRunning) openPausePopup()
-    else if (e.key === 'Escape' && !gameData.isRunning) closePausePopup()
+    if (e.key === 'Escape' && gameData.isRunning) openPopup("pause-popup")
+    else if (e.key === 'Escape' && !gameData.isRunning) closePopup("pause-popup")
   })
 
   gameData.isRunning = true
+  updateTime()
 }
 
 const handleStart = (e) => {
@@ -99,8 +116,9 @@ export const renderStart = () => {
 }
 
 export const triggerGameOver = () => {
-  alert("You die");
-  
+  const gameover = document.getElementById("gameover-popup")
+  gameover.style.display = "flex"
+
 }
 
 const updateScore = (point) => {
@@ -111,16 +129,26 @@ const updateScore = (point) => {
 
 
 const updateLevel = (newLevel) => {
-  console.log(gameData.level)
   gameData.level = newLevel
   const levelEl = document.querySelector(".level")
   levelEl.textContent = "Level: " + gameData.level
 }
 
+const updateTime = () => {
+  if (!gameData.isRunning) return
+  const timer = document.getElementsByClassName("time")[0]
+  console.log(timer)
+
+  const passedTime =   Math.floor( performance.now() /1000)
+  console.log(gameData.startTime)
+  timer. textContent = "Time: " + (gameData.startTime - passedTime)
+  requestAnimationFrame(updateTime)
+}
+
 
 export const removeOneLife = () => {
   const lastHeart = document.querySelector(".heart:last-of-type")
-  gameData.lives --
+  gameData.lives--
   lastHeart.remove()
 
   if (gameData.lives === 0) triggerGameOver();
