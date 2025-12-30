@@ -1,7 +1,7 @@
 import { gameData, triggerGameOver, triggerWinning } from "./map.js";
 
 export let configEnemies = {
-    speed: 2,
+    speed: 10,
     numberEnemies: 15,
     numberOfEnemiesInLine: 5,
     width: 60,
@@ -94,6 +94,10 @@ function moveBullets() {
 
 function moveTheEnemies() {
     let detEnemies = configEnemies.containerEnemies.getBoundingClientRect();
+    if (detEnemies.bottom >= configEnemies.bottomWall - configEnemies.width * 2) {
+        triggerGameOver();
+        return;
+    }
     if (configEnemies.goingRight) {
         if (detEnemies.right >= configEnemies.rightWall) {
             configEnemies.containerEnemies.style.top = parseInt(configEnemies.containerEnemies.style.top, 10) + configEnemies.speed * 3 + `px`;
