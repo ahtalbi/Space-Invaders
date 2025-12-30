@@ -1,7 +1,7 @@
 import { gameData, triggerGameOver, triggerWinning } from "./map.js";
 
 export let configEnemies = {
-    speed: 10,
+    speed: 3,
     numberEnemies: 15,
     numberOfEnemiesInLine: 5,
     width: 60,
@@ -24,6 +24,20 @@ export let configBulletsEnemies = {
 }
 
 let shootingTimerId = null;
+
+
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        if (shootingTimerId) {
+            clearTimeout(shootingTimerId);
+            shootingTimerId = null;
+        }
+    } else {
+        if (gameData.isRunning && configEnemies.arrOfEnemies.length > 0 && !shootingTimerId) {
+            enemiesShots();
+        }
+    }
+});
 
 class enemy {
     constructor() {
