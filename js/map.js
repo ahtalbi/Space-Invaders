@@ -190,7 +190,7 @@ const restart = () => {
 
 }
 
-const updateScore = (point) => {
+export const updateScore = (point) => {
   gameData.score += point
   const scoreEl = document.querySelector(".score")
   scoreEl.textContent = "Score: " + gameData.score

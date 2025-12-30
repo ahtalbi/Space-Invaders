@@ -1,4 +1,4 @@
-import { gameData, triggerGameOver, triggerWinning } from "./map.js";
+import { gameData, triggerGameOver, triggerWinning, updateScore } from "./map.js";
 
 export let configEnemies = {
     speed: 3,
@@ -184,6 +184,7 @@ function enemyDie() {
             let enemyEl = configEnemies.arrOfEnemies[j];
 
             if (isTheBulletInside(bullets[i], enemyEl.enemyElement)) {
+                updateScore(100);
                 const destroyAnimation = document.createElement("img");
                 destroyAnimation.src = "assets/pictures/enemies/destroyed.gif";
                 destroyAnimation.style.position = "absolute";
