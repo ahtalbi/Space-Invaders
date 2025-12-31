@@ -128,5 +128,4 @@ export function moveRocket() {
       ele.remove();
     }
   });
-  if (gameData.isRunning) requestAnimationFrame(moveRocket);
 }

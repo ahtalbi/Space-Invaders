@@ -268,7 +268,6 @@ export function gameLoop(container) {
     moveBullets();
     moveTheEnemies();
     enemyDie();
-    requestAnimationFrame(() => gameLoop(container));
 }
 
 export function cleanupEnemies() {
@@ -315,5 +314,4 @@ export function InitlizeTheEnemies(container) {
     }
     container.append(configEnemies.containerEnemies);
     enemiesShots();
-    requestAnimationFrame(() => gameLoop(container));
 }

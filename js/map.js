@@ -14,9 +14,39 @@ export const gameData = {
   isover: false,
 }
 
+const updateDisplay = (data) => {
+  data.children[0].textContent = "Level: " + gameData.level
+  data.children[1].textContent = "Time: 120"
+  data.children[2].textContent = "Score: " + gameData.score
+  data.children[3].innerHTML = `Lives: ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(gameData.lives)}`
+}
+
+const resetGameState = (resetLives = false) => {
+  Object.assign(gameData, {
+    startTime: 120,
+    passedTime: 0,
+    diffTime: 0,
+    isover: false,
+    ...(resetLives ? { lives: 3 } : {})
+  })
+}
+
+const initializeLevel = (container, data) => {
+  configEnemies.containerEnemies = document.createElement("div")
+  configEnemies.arrOfEnemies = []
+
+  while (container.children.length > 2) {
+    container.children[2].remove()
+  }
+
+  updateDisplay(data)
+  rocket = new Rocket()
+  rocket.create(container)
+  InitlizeTheEnemies(container)
+}
+
 const startGame = () => {
   document.body.style.minHeight = '10vh'
-
   document.body.innerHTML = generateGame(gameData)
 
   const wrapper = document.getElementsByClassName("wrapper")[0]
@@ -24,68 +54,42 @@ const startGame = () => {
   const container = wrapper.children[1]
 
   InitlizeTheEnemies(container)
-
   rocket = new Rocket()
   rocket.create(container)
-
   gameData.isRunning = true
-  updateTime()
-  moveRocket()
+
+  play(container)
 
   document.addEventListener('keydown', (e) => {
     if (gameData.isover) return
-    if (e.key === 'Escape' && gameData.isRunning) openPopup("pause-popup")
-    else if (e.key === 'Escape' && !gameData.isRunning) resumeGame(container, "pause-popup")
+    if (e.key === 'Escape') {
+      gameData.isRunning ? openPopup("pause-popup") : resumeGame(container, "pause-popup")
+    }
   })
-  document.getElementById("resume-btn").addEventListener("click", () => resumeGame(container, "pause-popup"))
-  document.getElementById("pause-quit-btn").addEventListener("click", () => location.reload())
-  document.getElementById("gameover-quit-btn").addEventListener("click", () => location.reload())
-  document.getElementById("pause-restart-btn").addEventListener("click", () => restartGame(container, data, "pause-popup"))
-  document.getElementById("gameover-restart-btn").addEventListener("click", () => restartGame(container, data, "gameover-popup"))
+
+  const addClickListener = (id, callback) => document.getElementById(id).addEventListener("click", callback)
+
+  addClickListener("resume-btn", () => resumeGame(container, "pause-popup"))
+  addClickListener("pause-quit-btn", () => location.reload())
+  addClickListener("gameover-quit-btn", () => location.reload())
+  addClickListener("pause-restart-btn", () => restartGame(container, data, "pause-popup"))
+  addClickListener("gameover-restart-btn", () => restartGame(container, data, "gameover-popup"))
 }
 
 const resumeGame = (container, popupName) => {
   closePopup(popupName)
-  moveRocket()
-  gameLoop(container);
-  updateTime()
+  play(container)
 }
 
 const restartGame = (container, data, popupName) => {
-  configEnemies.containerEnemies = document.createElement("div");
-  configEnemies.arrOfEnemies = [];
-
-  while (container.children.length > 2) {
-    container.children[2].remove()
-  }
-
-  Object.assign(gameData, {
-    startTime: 120,
-    passedTime: 0,
-    diffTime: 0,
-    lives: 3,
-    isover: false
-  })
-
-  data.children[1].textContent = "Time: 120"
-  data.children[2].textContent = "Score: " + gameData.score
-  data.children[3].innerHTML = `
-  Lives:
-  ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(3)}
-  `
-
-  rocket = new Rocket()
-  rocket.create(container)
-  InitlizeTheEnemies(container)
+  resetGameState(true)
+  initializeLevel(container, data)
   closePopup(popupName)
-  moveRocket()
-  updateTime()
+  play(container)
 }
 
 const handleStart = (e) => {
-  if (e.type === "click" || e.key === "Enter") {
-    startGame()
-  }
+  if (e.type === "click" || e.key === "Enter") startGame()
 }
 
 export const renderStart = () => {
@@ -97,14 +101,12 @@ export const renderStart = () => {
   </div>
   `
   const startBtn = document.getElementById("btn-start")
-
   startBtn.addEventListener("click", handleStart, { once: true })
   document.addEventListener("keydown", handleStart, { once: true })
 }
 
 export const triggerGameOver = () => {
-  const gameover = document.getElementById("gameover-popup")
-  gameover.style.display = "flex"
+  document.getElementById("gameover-popup").style.display = "flex"
   gameData.isRunning = false
   gameData.isover = true
 }
@@ -119,7 +121,7 @@ export const triggerWinning = () => {
   setTimeout(() => {
     gameData.isover = false
     resumeGame(container, "won-popup")
-  }, 3000)
+  }, 1500)
 
   setNewParameters(container, data)
 }
@@ -130,124 +132,103 @@ export const updateScore = (point) => {
   scoreEl.textContent = "Score: " + (oldScore + point)
 }
 
-
 const setNewParameters = (container, data) => {
   gameData.level++
-  Object.assign(gameData, {
-    startTime: 120,
-    passedTime: 0,
-    diffTime: 0,
-    score: Number(data.children[2].textContent.split(" ")[1]),
-  })
-
-  configEnemies.containerEnemies = document.createElement("div");
-  configEnemies.arrOfEnemies = [];
-  configEnemies.speed ++
-
-  while (container.children.length > 2) {
-    container.children[2].remove()
-  }
-
-  data.children[0].textContent = "Level: " + gameData.level
-  data.children[1].textContent = "Time: 120"
-  data.children[2].textContent = "Score: " + gameData.score
-  data.children[3].innerHTML = `
-  Lives:
-  ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(gameData.lives)}
-  `
-
-  rocket = new Rocket()
-  rocket.create(container)
-  InitlizeTheEnemies(container)
+  gameData.score = Number(data.children[2].textContent.split(" ")[1])
+  resetGameState(false)
+  configEnemies.speed++
+  initializeLevel(container, data)
 }
 
 const updateTime = () => {
   if (!gameData.isRunning || gameData.isover) return
 
   const timer = document.getElementsByClassName("time")[0]
-
-  const now = (performance.now() / 1000)
+  const now = performance.now() / 1000
   const diff = now - gameData.passedTime
   gameData.passedTime = now
 
   if (diff > 1) gameData.diffTime += diff
 
-  timer.textContent = "time: " + Math.floor(gameData.startTime - now + gameData.diffTime)
+  const remainingTime = Math.floor(gameData.startTime - now + gameData.diffTime)
 
-  requestAnimationFrame(updateTime)
+  timer.textContent = "time: " + remainingTime
+
+  if (remainingTime === 0) triggerGameOver()
+  else requestAnimationFrame(updateTime)
 }
 
 export const removeOneLife = () => {
-  const lastHeart = document.querySelector(".heart:last-of-type")
-  gameData.lives--
-  lastHeart.remove()
-
-  if (gameData.lives === 0) triggerGameOver();
+  document.querySelector(".heart:last-of-type").remove()
+  if (--gameData.lives === 0) triggerGameOver()
 }
 
-const openPopup = (popupName) => {
-  const popup = document.getElementById(popupName)
-  popup.style.display = 'flex'
+const throttle = (cb, delay) => {
+  let timer = null
+
+  return (...args) => {
+    if (timer) return
+
+    cb(...args)
+
+    timer = setTimeout(() => {
+      timer = null
+    }, delay)
+  }
+
+}
+
+const openPopup = throttle((popupName) => {
+  document.getElementById(popupName).style.display = 'flex'
   gameData.isRunning = false
-}
+}, 500)
 
 const closePopup = (popupName) => {
-  const popup = document.getElementById(popupName)
-  popup.style.display = 'none'
+  document.getElementById(popupName).style.display = 'none'
   gameData.isRunning = true
 }
 
 const generateGame = (gameData) => {
-  return `
-  <div class="pause-popup" id="pause-popup">
+  const createPopup = (id, title, buttons = '') => `
+  <div class="pause-popup" id="${id}">
     <div class="pause-content">
-      <h2 class="pause-title">PAUSE</h2>
-      <div class="pause-buttons">
-        <button class="pause-btn resume-btn" id="resume-btn">
-          ▶ Resume
-        </button>
-        <button class="pause-btn restart-btn" id="pause-restart-btn">
-          ↻ Restart
-        </button>
-        <button class="pause-btn quit-btn" id="pause-quit-btn">
-          X Quit
-        </button>
-      </div>
+      ${title.includes('WON') ? `<p class="pause-title">${title}</p>` : `<h2 class="pause-title">${title}</h2>`}
+      ${buttons ? `<div class="pause-buttons">${buttons}</div>` : ''}
     </div>
-  </div>
+  </div>`
 
+  const pauseButtons = `
+    <button class="pause-btn resume-btn" id="resume-btn">▶ Resume</button>
+    <button class="pause-btn restart-btn" id="pause-restart-btn">↻ Restart</button>
+    <button class="pause-btn quit-btn" id="pause-quit-btn">X Quit</button>`
+
+  const gameoverButtons = `
+    <button class="pause-btn restart-btn" id="gameover-restart-btn">↻ Restart</button>
+    <button class="pause-btn quit-btn" id="gameover-quit-btn">X Quit</button>`
+
+  return `
+  ${createPopup('pause-popup', 'PAUSE', pauseButtons)}
   <div class="wrapper">
     <div class="data">
       <span class="level">Level: ${gameData.level} </span>
       <span class="time">Time: ${gameData.startGame} </span>
       <span class="score">Score: ${gameData.score}</span>
-      <span class="lives">
-        Lives:
-        ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(gameData.lives)}
-      </span>
+      <span class="lives">Lives: ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(gameData.lives)}</span>
     </div>
-
     <div class="container">
+      ${createPopup('won-popup', 'YOU WON!')}
+      ${createPopup('gameover-popup', 'GAME OVER', gameoverButtons)}
+    </div>
+  </div>`
+}
 
- <div class="pause-popup" id="won-popup">
-    <div class="pause-content">
-      <p class="pause-title">YOU WON!</p>
-    </div>
-  </div>
 
-      <div class="pause-popup" id="gameover-popup">
-    <div class="pause-content">
-      <h2 class="pause-title">GAME OVER</h2>
-      <div class="pause-buttons">
-        <button class="pause-btn restart-btn" id="gameover-restart-btn">
-          ↻ Restart
-        </button>
-        <button class="pause-btn quit-btn" id="gameover-quit-btn">
-          X Quit
-        </button>
-      </div>
-    </div>
-  </div>
-    </div>
-`
+const play = (container) => {
+  if (!gameData.isRunning || gameData.isover) return
+
+  updateTime()
+  moveRocket()
+  gameLoop(container)
+
+  requestAnimationFrame(() => play(container))
 }
