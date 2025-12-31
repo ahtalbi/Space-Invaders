@@ -82,9 +82,6 @@ export class Rocket {
       }
     }, 200);
   }
-
-  // speed change based on the current level
-  changeSpeed() {}
 }
 
 window.addEventListener("keydown", (e) => {

@@ -5,7 +5,7 @@ export let rocket = null
 
 export const gameData = {
   score: 0,
-  startTime: 120,
+  startTime: 90,
   passedTime: 0,
   diffTime: 0,
   lives: 3,
@@ -16,14 +16,14 @@ export const gameData = {
 
 const updateDisplay = (data) => {
   data.children[0].textContent = "Level: " + gameData.level
-  data.children[1].textContent = "Time: 120"
+  data.children[1].textContent = "Time: 90"
   data.children[2].textContent = "Score: " + gameData.score
   data.children[3].innerHTML = `Lives: ${'<img class="heart" src="./assets/pictures/heart.png">'.repeat(gameData.lives)}`
 }
 
 const resetGameState = (resetLives = false) => {
   Object.assign(gameData, {
-    startTime: 120,
+    startTime: 90,
     passedTime: 0,
     diffTime: 0,
     isover: false,

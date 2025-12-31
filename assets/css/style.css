@@ -44,7 +44,7 @@ body {
     color: #00ff41;
     padding: 2vw 5vw;
     font-size: 2vw;
-    font-family: 'Courier New', monospace;
+    font-family: "Orbitron", "Courier New" sans-serif;
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -105,7 +105,7 @@ body {
 .pause-popup {
     position: fixed;
     inset: 0;
-    backdrop-filter: blur(1px);
+    background-color: rgba(0, 0, 0, 0.65);
     display: none;
     justify-content: center;
     align-items: center;
@@ -117,14 +117,15 @@ body {
     border-radius: 15px;
     padding: 5vw;
     text-align: center;
-    box-shadow: 0 0 30px rgba(0, 255, 65, 0.5), 0 0 60px rgba(0, 255, 65, 0.3);
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+    background-color: rgba(0, 0, 0, 0.12);;
 }
 
 
 .pause-title {
     font-size: 5vw;
     color: #00ff41;
-    text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41;
+    text-shadow: 0 0 20px #00ff41;
     margin-bottom: 4vw;
 }
 
@@ -140,7 +141,7 @@ body {
     color: #00ff41;
     padding: 2vw 4vw;
     font-size:2vw;
-    font-family: 'Courier New', monospace;
+    font-family: "Orbitron", "Courier New" sans-serif;
     cursor: pointer;
     position: relative;
     transition: all 0.3s ease;
@@ -149,7 +150,7 @@ body {
 
 .pause-btn:hover {
     box-shadow: 0 0 20px #00ff41;
-    transform: translateX(5px);
+    transform: translateY(-5px);
 }
 
 .restart-btn {

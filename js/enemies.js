@@ -15,7 +15,7 @@ export let configEnemies = {
 
 export let configBulletsEnemies = {
     speed: 4,
-    width: 60,
+    width: 10,
     minEnShot: 0,
     maxEnShot: 1,
     minEnShotTime: 1000,

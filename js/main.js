@@ -1,3 +1,3 @@
-import { renderStart, gameData } from "./map.js";
+import { renderStart } from "./map.js";
 
 renderStart()
