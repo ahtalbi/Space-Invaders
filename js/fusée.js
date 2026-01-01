@@ -1,5 +1,5 @@
 import { rocket, gameData, removeOneLife } from "./map.js";
-import {isTheBulletInside} from "./enemies.js"
+import { isTheBulletInside } from "./enemies.js"
 
 let vars = {
   pressleft: false,
@@ -51,15 +51,16 @@ export class Rocket {
     let r = this.rocket.getBoundingClientRect();
     projectile.style.left = `${r.left + 22}px`;
     projectile.style.top = `${r.top - 50}px`;
-    let m = r.top - 50;
+
+    let m = 0;
 
     let shoot = () => {
-      if (gameData.isRunning){
-        projectile.style.top = `${m}px`;
+      if (gameData.isRunning) {
+        projectile.style.transform = `translate3d(0, ${m}px, 0)`;
         m -= 5;
       }
-      if (m > 160) {
-         requestAnimationFrame(shoot);
+      if (m > -550) {
+        requestAnimationFrame(shoot);
       } else {
         projectile.remove();
       }
@@ -112,7 +113,7 @@ window.addEventListener("keyup", (e) => {
 export function moveRocket() {
   let now = Date.now();
   if (now - vars.timerMove >= 16) {
-    if (vars.pressleft) rocket?.moveLeft(10);    
+    if (vars.pressleft) rocket?.moveLeft(10);
     if (vars.pressrigth) rocket.moveRight(10);
     vars.timerMove = now;
   }
