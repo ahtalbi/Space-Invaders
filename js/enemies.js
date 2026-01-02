@@ -244,7 +244,6 @@ function enemiesShots() {
         enemy.shotTheBullete();
     }
 
-
     for (let i = configBulletsEnemies.minEnShot; i <= configBulletsEnemies.maxEnShot; i++) {
         shootOnce();
     }
@@ -268,30 +267,6 @@ export function gameLoop(container) {
     moveBullets();
     moveTheEnemies();
     enemyDie();
-}
-
-export function cleanupEnemies() {
-    if (shootingTimerId) {
-        clearTimeout(shootingTimerId);
-        shootingTimerId = null;
-    }
-
-    configBulletsEnemies.activeBullets.forEach(bullet => {
-        if (bullet.parentNode) bullet.remove();
-    });
-    configBulletsEnemies.activeBullets = [];
-
-    configEnemies.arrOfEnemies.forEach(enemy => {
-        if (enemy.enemyElement.parentNode) enemy.enemyElement.remove();
-    });
-    configEnemies.arrOfEnemies = [];
-
-    if (configEnemies.containerEnemies.parentNode) {
-        configEnemies.containerEnemies.remove();
-    }
-
-    configEnemies.containerEnemies = document.createElement("div");
-    configEnemies.goingRight = true;
 }
 
 export function InitlizeTheEnemies(container) {
