@@ -8,9 +8,12 @@ export let configEnemies = {
     leftWall: 0,
     rightWall: 0,
     bottomWall: 0,
+    translateX: 0,
+    translateY: 0,
     arrOfEnemies: [],
     containerEnemies: document.createElement("div"),
     goingRight: true,
+    gameContainer: null,
 }
 
 export let configBulletsEnemies = {
@@ -24,7 +27,6 @@ export let configBulletsEnemies = {
 }
 
 let shootingTimerId = null;
-
 
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
@@ -74,14 +76,22 @@ class enemy {
         bullet.style.imageRendering = "pixelated";
 
         let enemyRect = this.enemyElement.getBoundingClientRect();
-        let parentRect = this.enemyElement.offsetParent.offsetParent.getBoundingClientRect();
+        let parentRect = configEnemies.gameContainer.getBoundingClientRect();
 
-        bullet.style.left = `${enemyRect.left - parentRect.left + configEnemies.width / 2 - configBulletsEnemies.width / 2}px`;
-        bullet.style.top = `${enemyRect.bottom - parentRect.top}px`;
+        let startX = enemyRect.left - parentRect.left + configEnemies.width / 2 - configBulletsEnemies.width / 2;
+        let startY = enemyRect.bottom - parentRect.top;
+        
+        bullet.style.left = `${startX}px`;
+        bullet.style.top = `${startY}px`;
         bullet.style.zIndex = "15";
+        
+        bullet.translateX = 0;
+        bullet.translateY = 0;
+        bullet.initialX = startX;
+        bullet.initialY = startY;
+        bullet.style.transform = `translate3d(0, 0, 0)`;
 
-        this.enemyElement.offsetParent.offsetParent.append(bullet);
-
+        configEnemies.gameContainer.append(bullet);
         configBulletsEnemies.activeBullets.push(bullet);
     }
 }
@@ -90,13 +100,8 @@ function moveBullets() {
     for (let i = configBulletsEnemies.activeBullets.length - 1; i >= 0; i--) {
         let bullet = configBulletsEnemies.activeBullets[i];
 
-        if (!bullet.parentNode) {
-            configBulletsEnemies.activeBullets.splice(i, 1);
-            continue;
-        }
-
-        let currentTop = parseInt(bullet.style.top, 10);
-        bullet.style.top = `${currentTop + configBulletsEnemies.speed}px`;
+        bullet.translateY += configBulletsEnemies.speed;
+        bullet.style.transform = `translate3d(${bullet.translateX}px, ${bullet.translateY}px, 0)`;
 
         let bulletRect = bullet.getBoundingClientRect();
         if (bulletRect.bottom >= configEnemies.bottomWall - 5) {
@@ -108,25 +113,29 @@ function moveBullets() {
 
 function moveTheEnemies() {
     let detEnemies = configEnemies.containerEnemies.getBoundingClientRect();
+    
     if (detEnemies.bottom >= configEnemies.bottomWall - configEnemies.width * 2) {
         triggerGameOver();
         return;
     }
+    
     if (configEnemies.goingRight) {
         if (detEnemies.right >= configEnemies.rightWall) {
-            configEnemies.containerEnemies.style.top = parseInt(configEnemies.containerEnemies.style.top, 10) + configEnemies.speed * 3 + `px`;
+            configEnemies.translateY += configEnemies.speed * 3;
             configEnemies.goingRight = false;
         } else {
-            configEnemies.containerEnemies.style.left = parseInt(configEnemies.containerEnemies.style.left, 10) + configEnemies.speed + `px`;
+            configEnemies.translateX += configEnemies.speed;
         }
     } else {
         if (detEnemies.left <= configEnemies.leftWall) {
-            configEnemies.containerEnemies.style.top = parseInt(configEnemies.containerEnemies.style.top, 10) + configEnemies.speed * 3 + `px`;
+            configEnemies.translateY += configEnemies.speed * 3;
             configEnemies.goingRight = true;
         } else {
-            configEnemies.containerEnemies.style.left = parseInt(configEnemies.containerEnemies.style.left, 10) - configEnemies.speed + `px`;
+            configEnemies.translateX -= configEnemies.speed;
         }
     }
+    
+    configEnemies.containerEnemies.style.transform = `translate3d(${configEnemies.translateX}px, ${configEnemies.translateY}px, 0)`;
 }
 
 export function isTheBulletInside(a, b) {
@@ -193,9 +202,7 @@ function enemyDie() {
                 destroyAnimation.style.width = configEnemies.width + "px";
                 destroyAnimation.style.height = configEnemies.width + "px";
                 destroyAnimation.style.imageRendering = "pixelated";
-
                 configEnemies.containerEnemies.appendChild(destroyAnimation);
-
                 configEnemies.arrOfEnemies[j].enemyElement.remove();
                 configEnemies.arrOfEnemies.splice(j, 1);
 
@@ -228,7 +235,6 @@ function enemiesShots() {
     }
 
     const alreadyShot = new Set();
-
     function shootOnce(tries = 0) {
         if (tries >= 5) return;
 
@@ -243,27 +249,22 @@ function enemiesShots() {
         alreadyShot.add(enemy);
         enemy.shotTheBullete();
     }
-
     for (let i = configBulletsEnemies.minEnShot; i <= configBulletsEnemies.maxEnShot; i++) {
         shootOnce();
     }
 
-    let delay =
-        Math.random() *
-        (configBulletsEnemies.maxEnShotTime - configBulletsEnemies.minEnShotTime) +
-        configBulletsEnemies.minEnShotTime;
-
+    let delay = Math.random() * (configBulletsEnemies.maxEnShotTime - configBulletsEnemies.minEnShotTime) + configBulletsEnemies.minEnShotTime;
     shootingTimerId = setTimeout(enemiesShots, delay);
 }
 
-
 export function gameLoop(container) {
     if (!gameData.isRunning) return;
-
+    
     let detContainer = container.getBoundingClientRect();
     configEnemies.leftWall = detContainer.left;
     configEnemies.rightWall = detContainer.right;
     configEnemies.bottomWall = detContainer.bottom;
+
     moveBullets();
     moveTheEnemies();
     enemyDie();
@@ -275,6 +276,7 @@ export function InitlizeTheEnemies(container) {
         shootingTimerId = null;
     }
 
+    configEnemies.gameContainer = container;
     configEnemies.containerEnemies.style.top = "30px";
     configEnemies.containerEnemies.style.left = "0px";
     configEnemies.containerEnemies.style.zIndex = "30";
@@ -282,11 +284,14 @@ export function InitlizeTheEnemies(container) {
     configEnemies.containerEnemies.style.height = (Math.ceil(configEnemies.numberEnemies / configEnemies.numberOfEnemiesInLine) - 1) * configEnemies.width + configEnemies.width + "px";
     configEnemies.containerEnemies.style.position = "absolute";
     configEnemies.containerEnemies.classList.add("containerEnemies");
+    configEnemies.containerEnemies.style.transform = `translate3d(0, 0, 0)`;
+    
     for (let i = 0; i < configEnemies.numberEnemies; i++) {
         let en = new enemy();
         en.create(configEnemies.containerEnemies, i);
         configEnemies.arrOfEnemies.push(en);
     }
+
     container.append(configEnemies.containerEnemies);
     enemiesShots();
 }

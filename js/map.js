@@ -34,7 +34,8 @@ const resetGameState = (resetLives = false) => {
 const initializeLevel = (container, data) => {
   configEnemies.containerEnemies = document.createElement("div")
   configEnemies.arrOfEnemies = []
-
+  configEnemies.translateX = 0
+  configEnemies.translateY = 0
   while (container.children.length > 2) {
     container.children[2].remove()
   }
