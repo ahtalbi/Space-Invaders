@@ -28,6 +28,7 @@ export let configBulletsEnemies = {
 
 let shootingTimerId = null;
 
+// this is for when we chagne the tab 
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
         if (shootingTimerId) {
@@ -41,6 +42,7 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
+// this class for define an enemy and the details of the enemy 
 class enemy {
     constructor() {
         this.enemyElement = document.createElement("img");
@@ -96,6 +98,7 @@ class enemy {
     }
 }
 
+// this function for move the bullets 
 function moveBullets() {
     for (let i = configBulletsEnemies.activeBullets.length - 1; i >= 0; i--) {
         let bullet = configBulletsEnemies.activeBullets[i];
@@ -111,6 +114,7 @@ function moveBullets() {
     }
 }
 
+// this function used to move the enemies
 function moveTheEnemies() {
     let detEnemies = configEnemies.containerEnemies.getBoundingClientRect();
     
@@ -138,6 +142,7 @@ function moveTheEnemies() {
     configEnemies.containerEnemies.style.transform = `translate3d(${configEnemies.translateX}px, ${configEnemies.translateY}px, 0)`;
 }
 
+// this function to check if a inside b
 export function isTheBulletInside(a, b) {
     const ra = a.getBoundingClientRect();
     const rb = b.getBoundingClientRect();
@@ -150,6 +155,7 @@ export function isTheBulletInside(a, b) {
     );
 }
 
+// this func for update the container of the enemies
 function updateEnemiesContainerSize() {
     const enemies = configEnemies.arrOfEnemies;
     if (enemies.length === 0) return;
@@ -183,6 +189,7 @@ function updateEnemiesContainerSize() {
     configEnemies.containerEnemies.style.height = (maxBottom - minTop) + "px";
 }
 
+// this func is when the enemie die
 function enemyDie() {
     const bullets = document.querySelectorAll(".projectile");
 
@@ -228,6 +235,7 @@ function enemyDie() {
     }
 }
 
+// this func is for let the enemies shot
 function enemiesShots() {
     let n = configEnemies.arrOfEnemies.length;
     if (n === 0) {
@@ -257,6 +265,7 @@ function enemiesShots() {
     shootingTimerId = setTimeout(enemiesShots, delay);
 }
 
+// this function is to make game loop 
 export function gameLoop(container) {
     if (!gameData.isRunning) return;
     
@@ -270,6 +279,7 @@ export function gameLoop(container) {
     enemyDie();
 }
 
+// this function used for initilize allthe enemeis
 export function InitlizeTheEnemies(container) {
     if (shootingTimerId) {
         clearTimeout(shootingTimerId);
