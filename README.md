@@ -18,5 +18,5 @@ This is a single player Space Invaders game built with JavaScript, HTML, and DOM
 
 ## how to play
 - Move right/left and shoot using Space
-- Avoid enemies' projectiles to survive
+- Avoid enemie's projectiles to survive
 - The game ends when lives reach 0 or timer runs out
