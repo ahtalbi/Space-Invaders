@@ -1,9 +1,6 @@
 ## Overview
 This is a single player Space Invaders game built with JavaScript, HTML, and DOM manipulation, designed for smooth gameplay at 60 FPS using requestAnimationFrame.
 
-## make-your-game repo
-`https://learn.zone01oujda.ma/git/iaboudou/make-your-game`
-
 ## Features
 - Game play
 - Pause menu: Press Escape to pause, then choose to Restart, Resume, or Quit
@@ -12,8 +9,8 @@ This is a single player Space Invaders game built with JavaScript, HTML, and DOM
 - Lives: There are three lives to survive during the game
 
 ## team
-- Ilyass Aboudou
 - Ahmed Talbi
+- Ilyass Aboudou
 - BEMAMORY Nomenjanahary Luciano Loic
 
 ## how to play
